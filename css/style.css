@@ -1,28 +1,43 @@
 :root {
-  /* Colores principales */
-  --primary-color: #0d6efd;
-  --primary-hover: #0b5ed7;
+  /* Paleta principal - Azul oscuro (#293E5A) */
+  --primary-color: #293e5a;
+  --primary-light: #3a5274;
+  --primary-dark: #1e2d41;
+  --primary-hover: #1e2d41;
+
+  /* Paleta de acento - Púrpura (#660666) */
+  --accent-color: #660666;
+  --accent-light: #8a238a;
+  --accent-dark: #4d044d;
+  --accent-hover: #4d044d;
+
+  /* Colores secundarios */
   --secondary-color: #6c757d;
   --success-color: #198754;
-  --danger-color: #dc3545;
   --warning-color: #ffc107;
-  --info-color: #0dcaf0;
+  --info-color: #17a2b8;
+  --danger-color: #dc3545;
 
   /* Colores de fondo */
   --bg-light: #f8f9fa;
   --bg-dark: #212529;
   --bg-white: #ffffff;
+  --bg-primary-light: rgba(41, 62, 90, 0.1);
 
   /* Colores de texto */
   --text-primary: #212529;
   --text-secondary: #6c757d;
   --text-light: #f8f9fa;
   --text-dark: #212529;
+  --text-on-primary: #ffffff;
+  --text-on-accent: #ffffff;
 
   /* Bordes y sombras */
   --border-color: #dee2e6;
   --shadow-color: rgba(0, 0, 0, 0.1);
   --shadow-hover: rgba(0, 0, 0, 0.15);
+  --shadow-primary: rgba(41, 62, 90, 0.2);
+  --shadow-accent: rgba(102, 6, 102, 0.2);
 
   /* Tamaños y espaciados */
   --border-radius: 8px;
@@ -57,7 +72,7 @@ body {
 }
 
 .active-nav {
-  border-bottom: 3px solid var(--primary-color);
+  border-bottom: 3px solid var(--accent-color);
   font-weight: bold;
   color: var(--primary-color) !important;
 }
@@ -81,7 +96,7 @@ body {
   left: 0;
   width: 80px;
   height: 2px;
-  background-color: var(--primary-color);
+  background-color: var(--accent-color);
 }
 
 /* Tarjetas de artículos */
@@ -97,7 +112,7 @@ body {
 
 .article-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px var(--shadow-hover);
+  box-shadow: 0 10px 20px var(--shadow-primary);
 }
 
 .article-card .card-img-top {
@@ -112,11 +127,21 @@ body {
 
 .article-card .card-title {
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--primary-color);
 }
 
 .article-card .card-text {
   color: var(--text-secondary);
+}
+
+.article-card .btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.article-card .btn-primary:hover {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
 }
 
 /* Contenedor de video */
@@ -173,7 +198,7 @@ body {
 }
 
 .carousel-caption {
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(41, 62, 90, 0.8);
   padding: 20px;
   border-radius: var(--border-radius);
 }
@@ -181,7 +206,7 @@ body {
 /* Footer */
 footer {
   margin-top: auto;
-  background-color: var(--bg-dark);
+  background-color: var(--primary-dark);
   color: var(--text-light);
 }
 
@@ -197,18 +222,19 @@ footer a {
 }
 
 footer a:hover {
-  color: var(--primary-color) !important;
+  color: var(--accent-light) !important;
 }
 
 /* Utilidades */
 .bg-light-custom {
-  background-color: var(--bg-light);
+  background-color: var(--bg-primary-light);
   border-radius: var(--border-radius);
+  border-left: 4px solid var(--accent-color);
 }
 
 .breaking-news {
-  background-color: var(--danger-color);
-  color: var(--text-light);
+  background-color: var(--accent-color);
+  color: var(--text-on-accent);
   padding: 5px 10px;
   border-radius: 4px;
   font-weight: bold;
@@ -217,7 +243,12 @@ footer a:hover {
 /* Badges con colores temáticos */
 .badge-primary {
   background-color: var(--primary-color);
-  color: white;
+  color: var(--text-on-primary);
+}
+
+.badge-accent {
+  background-color: var(--accent-color);
+  color: var(--text-on-accent);
 }
 
 .badge-success {
@@ -232,7 +263,7 @@ footer a:hover {
 
 .badge-info {
   background-color: var(--info-color);
-  color: var(--text-dark);
+  color: var(--text-on-primary);
 }
 
 .badge-danger {
@@ -244,11 +275,59 @@ footer a:hover {
 .btn-primary {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
+  color: var(--text-on-primary);
 }
 
 .btn-primary:hover {
-  background-color: var(--primary-hover);
-  border-color: var(--primary-hover);
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+  color: var(--text-on-primary);
+}
+
+.btn-accent {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--text-on-accent);
+}
+
+.btn-accent:hover {
+  background-color: var(--accent-dark);
+  border-color: var(--accent-dark);
+  color: var(--text-on-accent);
+}
+
+/* Elementos de formulario */
+.form-control:focus {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 0.25rem var(--shadow-primary);
+}
+
+/* List group items */
+.list-group-item.active {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.list-group-item-action:hover {
+  background-color: var(--bg-primary-light);
+}
+
+/* Utilidades de color de texto */
+.text-primary {
+  color: var(--primary-color) !important;
+}
+
+.text-accent {
+  color: var(--accent-color) !important;
+}
+
+/* Utilidades de color de fondo */
+.bg-primary {
+  background-color: var(--primary-color) !important;
+}
+
+.bg-accent {
+  background-color: var(--accent-color) !important;
 }
 
 /* Responsividad */
@@ -282,7 +361,8 @@ footer a:hover {
 
 /* Modo oscuro opcional */
 [data-theme="dark"] {
-  --primary-color: #3b82f6;
+  --primary-color: #3a5274;
+  --primary-dark: #293e5a;
   --bg-light: #343a40;
   --bg-white: #212529;
   --text-primary: #f8f9fa;
