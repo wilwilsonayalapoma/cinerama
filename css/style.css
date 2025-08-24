@@ -189,7 +189,7 @@ body {
 
 /* Carrusel personalizado */
 .carousel-item {
-  height: 400px;
+  height: 150px;
 }
 
 .carousel-item img {
@@ -201,6 +201,10 @@ body {
   background-color: rgba(41, 62, 90, 0.8);
   padding: 20px;
   border-radius: var(--border-radius);
+}
+
+.visually-hidden {
+  background-color: #660666;
 }
 
 /* Footer */
