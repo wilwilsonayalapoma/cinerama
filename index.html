@@ -108,11 +108,87 @@
               <button class="btn btn-outline-primary" type="submit">
                 Buscar
               </button>
+              <!-- Icono de usuario -->
+              <button type="button" class="btn btn-outline-secondary ms-2" data-bs-toggle="modal" data-bs-target="#loginModal">
+                <i class="fa fa-user"></i>
+              </button>
             </form>
           </div>
         </div>
       </nav>
     </header>
+
+    <!-- Modal de inicio de sesión -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content" style="background:#fff; border-radius:16px; box-shadow:0 4px 24px rgba(41,62,90,0.15);">
+          <div class="modal-header" style="border-bottom:1px solid #e3e3e3;">
+            <h5 class="modal-title" id="loginModalLabel" style="color:#293e5a; font-weight:bold;">Iniciar sesión</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <form id="loginForm">
+              <div class="mb-3">
+                <label for="loginEmail" class="form-label">Correo electrónico</label>
+                <input type="email" class="form-control" id="loginEmail" placeholder="correo@ejemplo.com" required>
+                <div class="invalid-feedback">Ingresa un correo válido.</div>
+              </div>
+              <div class="mb-3">
+                <label for="loginPassword" class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="loginPassword" placeholder="Contraseña" required>
+                <div class="invalid-feedback">Ingresa tu contraseña.</div>
+              </div>
+              <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+            </form>
+            <div class="text-center mt-3">
+              <span>¿No tienes cuenta?</span>
+              <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal">Registrarse</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de registro -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content" style="background:#fff; border-radius:16px; box-shadow:0 4px 24px rgba(41,62,90,0.15);">
+          <div class="modal-header" style="border-bottom:1px solid #e3e3e3;">
+            <h5 class="modal-title" id="registerModalLabel" style="color:#293e5a; font-weight:bold;">Registrarse</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <form id="registerForm">
+              <div class="mb-3">
+                <label for="registerName" class="form-label">Nombre completo</label>
+                <input type="text" class="form-control" id="registerName" placeholder="Nombre completo" required>
+                <div class="invalid-feedback">Ingresa tu nombre completo.</div>
+              </div>
+              <div class="mb-3">
+                <label for="registerEmail" class="form-label">Correo electrónico</label>
+                <input type="email" class="form-control" id="registerEmail" placeholder="correo@ejemplo.com" required>
+                <div class="invalid-feedback">Ingresa un correo válido.</div>
+              </div>
+              <div class="mb-3">
+                <label for="registerPassword" class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="registerPassword" placeholder="Contraseña" required>
+                <div class="invalid-feedback">Ingresa una contraseña.</div>
+              </div>
+              <div class="mb-3">
+                <label for="registerPassword2" class="form-label">Verificar contraseña</label>
+                <input type="password" class="form-control" id="registerPassword2" placeholder="Repite la contraseña" required>
+                <div class="invalid-feedback">Las contraseñas no coinciden.</div>
+              </div>
+              <button type="submit" class="btn btn-success w-100">Registrarse</button>
+            </form>
+            <div class="text-center mt-3">
+              <span>¿Ya tienes cuenta?</span>
+              <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-dismiss="modal">Iniciar sesión</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Contenido Principal (carga dinámica SPA) -->
     <main class="container my-3 spa-content" id="spa-content">
