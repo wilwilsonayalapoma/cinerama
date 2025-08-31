@@ -1,3 +1,70 @@
+// Edición de usuario: jala datos al formulario y hace la contraseña opcional
+$(document).on("click", ".btnEditarUsuario", function () {
+  var id = $(this).data("id");
+  var nombre = $(this).data("nombre");
+  var correo = $(this).data("correo");
+  var rol = $(this).data("rol");
+  $("#edit_id").val(id);
+  $("#nombre").val(nombre);
+  $("#correo").val(correo);
+  $("#rol").val(rol);
+  // Ocultar campo contraseña y mostrar botón para cambiarla
+  $("#password").val("").attr("placeholder", "Dejar vacío para no cambiar");
+  $("#password").closest(".col-md-6").hide();
+  if ($("#cambiarPassBtn").length === 0) {
+    $("#rol")
+      .closest(".col-md-6")
+      .after(
+        '<div class="col-md-6"><button type="button" class="btn btn-warning mt-4" id="cambiarPassBtn">Cambiar contraseña</button></div>'
+      );
+  }
+  $("#btnRegistrar").addClass("d-none");
+  $("#btnEditar").removeClass("d-none");
+  // Subir al formulario y enfocar
+  $("html, body").animate(
+    { scrollTop: $("#formUsuario").offset().top - 40 },
+    400
+  );
+  $("#nombre").focus();
+});
+
+// Mostrar campo contraseña si el usuario quiere cambiarla
+$(document).on("click", "#cambiarPassBtn", function () {
+  $("#password").closest(".col-md-6").show();
+  $(this).remove();
+});
+
+// Al cancelar edición, restaurar formulario
+$(document).on("click", "#btnRegistrar", function () {
+  $("#formUsuario")[0].reset();
+  $("#edit_id").val("");
+  $("#btnRegistrar").removeClass("d-none");
+  $("#btnEditar").addClass("d-none");
+  $("#password").closest(".col-md-6").show();
+  $("#cambiarPassBtn").remove();
+});
+// Filtrar usuarios en la tabla por nombre o correo
+// Búsqueda automática: filtra y resalta todas las coincidencias
+$(document).on("input", "#buscarUsuario", function () {
+  var filtro = $(this).val().toLowerCase();
+  var hayCoincidencia = false;
+  $("#tablaUsuarios tbody tr").each(function () {
+    var nombre = $(this).find("td:nth-child(2)").text().toLowerCase();
+    var correo = $(this).find("td:nth-child(3)").text().toLowerCase();
+    if (filtro.length === 0) {
+      $(this).show();
+      $(this).removeClass("table-info");
+    } else if (nombre.includes(filtro) || correo.includes(filtro)) {
+      $(this).show();
+      $(this).addClass("table-info");
+      hayCoincidencia = true;
+    } else {
+      $(this).hide();
+      $(this).removeClass("table-info");
+    }
+  });
+  // Si no hay coincidencias, puedes mostrar un mensaje o dejar la tabla vacía
+});
 // Funcionalidad SPA
 $(document).ready(function () {
   // Validación de formulario de login
@@ -170,4 +237,282 @@ $(document).ready(function () {
 
   // Inicializar tooltips de Bootstrap
   $('[data-bs-toggle="tooltip"]').tooltip();
+});
+
+// Toast Bootstrap para mensajes
+function mostrarToast(mensaje, tipo = "success") {
+  var toastHtml = `
+    <div class="toast align-items-center text-bg-${tipo} border-0 position-fixed top-0 end-0 m-3" role="alert" aria-live="assertive" aria-atomic="true" style="z-index:9999; min-width:250px;">
+      <div class="d-flex">
+        <div class="toast-body">${mensaje}</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>`;
+  var $toast = $(toastHtml);
+  $("body").append($toast);
+  var toast = new bootstrap.Toast($toast[0]);
+  toast.show();
+  setTimeout(function () {
+    $toast.remove();
+  }, 3000);
+}
+
+// Envío AJAX para registro de usuario
+$(document).on("click", "#btnRegistrar", function (e) {
+  e.preventDefault();
+  var form = $("#formUsuario");
+  var formData = form.serialize();
+  $.ajax({
+    url: window.location.pathname,
+    type: "POST",
+    data: formData,
+    headers: { "X-Requested-With": "XMLHttpRequest" },
+    success: function (data) {
+      // Reemplaza el contenido del main dinámico del dashboard
+      $("main.col-md-9").html(data);
+      // Mostrar alerta de registro exitoso
+      mostrarToast("Usuario registrado correctamente", "success");
+      // Scroll al formulario y enfocar
+      $("html, body").animate(
+        { scrollTop: $("#formUsuario").offset().top - 40 },
+        400
+      );
+      $("#nombre").focus();
+    },
+    error: function () {
+      alert("Error al guardar cambios");
+    },
+  });
+});
+
+// Envío AJAX para edición de usuario
+$(document).on("click", "#btnEditar", function (e) {
+  e.preventDefault();
+  var form = $("#formUsuario");
+  var formData = form.serialize();
+  $.ajax({
+    url: window.location.pathname,
+    type: "POST",
+    data: formData,
+    headers: { "X-Requested-With": "XMLHttpRequest" },
+    success: function (data) {
+      // Reemplaza el contenido del main dinámico del dashboard
+      $("main.col-md-9").html(data);
+      // Mostrar alerta de edición exitosa
+      mostrarToast("Usuario editado correctamente", "info");
+      // Scroll al formulario y enfocar
+      $("html, body").animate(
+        { scrollTop: $("#formUsuario").offset().top - 40 },
+        400
+      );
+      $("#nombre").focus();
+    },
+    error: function () {
+      alert("Error al guardar cambios");
+    },
+  });
+});
+
+// Recargar solo la tabla de usuarios tras eliminar
+function recargarTablaUsuarios() {
+  $.ajax({
+    url: window.location.pathname,
+    type: "GET",
+    headers: { "X-Requested-With": "XMLHttpRequest" },
+    success: function (data) {
+      var nuevaTabla = $(data).find("#tablaUsuarios").parent().html();
+      $("#tablaUsuarios").parent().html(nuevaTabla);
+    },
+  });
+}
+
+$(document).on("click", ".btn-danger", function (e) {
+  var href = $(this).attr("href");
+  if (href && href.includes("?delete=")) {
+    e.preventDefault();
+    if (confirm("¿Seguro que deseas eliminar este usuario?")) {
+      $.ajax({
+        url: href,
+        type: "GET",
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+        success: function (res) {
+          try {
+            var data = JSON.parse(res);
+            if (data.success) {
+              mostrarToast(data.msg, "danger");
+              recargarTablaUsuarios();
+            }
+          } catch (err) {
+            mostrarToast("Usuario eliminado", "danger");
+            recargarTablaUsuarios();
+          }
+        },
+        error: function () {
+          mostrarToast("Error al eliminar usuario", "danger");
+        },
+      });
+    }
+  }
+});
+
+// Edición de categoría: autocompletar formulario y mostrar botón de editar
+$(document).on("click", ".btnEditarCategoria", function () {
+  var id = $(this).data("id");
+  var nombre = $(this).data("nombre");
+  var color = $(this).data("color");
+  $("#edit_id").val(id);
+  $("#nombre").val(nombre);
+  $("#color").val(color);
+  $("#btnRegistrarCategoria").addClass("d-none");
+  $("#btnEditarCategoria").removeClass("d-none");
+  $("html, body").animate(
+    { scrollTop: $("#formCategoria").offset().top - 40 },
+    400
+  );
+  $("#nombre").focus();
+});
+
+// Cancelar edición de categoría (al registrar)
+$(document).on("click", "#btnRegistrarCategoria", function () {
+  $("#formCategoria")[0].reset();
+  $("#edit_id").val("");
+  $("#btnRegistrarCategoria").removeClass("d-none");
+  $("#btnEditarCategoria").addClass("d-none");
+});
+
+// Envío AJAX para edición de categoría
+$(document).on("click", "#btnEditarCategoria", function (e) {
+  e.preventDefault();
+  var form = $("#formCategoria");
+  var formData = form.serialize();
+  $.ajax({
+    url: window.location.pathname,
+    type: "POST",
+    data: formData,
+    headers: { "X-Requested-With": "XMLHttpRequest" },
+    success: function (data) {
+      $("main.col-md-9").html(data);
+      mostrarToast("Categoría editada correctamente", "info");
+      $("#formCategoria")[0].reset();
+      $("#edit_id").val("");
+      $("#btnRegistrarCategoria").removeClass("d-none");
+      $("#btnEditarCategoria").addClass("d-none");
+      $("html, body").animate(
+        { scrollTop: $("#formCategoria").offset().top - 40 },
+        400
+      );
+      $("#nombre").focus();
+    },
+    error: function () {
+      mostrarToast("Error al editar categoría", "danger");
+    },
+  });
+});
+
+// Edición de noticia: autocompletar formulario y mostrar botón de editar
+$(document).on("click", ".btnEditarNoticia", function () {
+  var id = $(this).data("id");
+  var titulo = $(this).data("titulo");
+  var contenido = $(this).data("contenido");
+  var categoria_id = $(this).data("categoria_id");
+  var usuario_id = $(this).data("usuario_id");
+  $("#edit_id").val(id);
+  $("#titulo").val(titulo);
+  $("#contenido").val(contenido);
+  if (categoria_id) $("#categoria_id").val(categoria_id);
+  if (usuario_id) $("#usuario_id").val(usuario_id);
+  $("#btnRegistrarNoticia").addClass("d-none");
+  $("#btnEditarNoticia").removeClass("d-none");
+  $("html, body").animate(
+    { scrollTop: $("#formNoticia").offset().top - 40 },
+    400
+  );
+  $("#titulo").focus();
+});
+
+// Cancelar edición de noticia (al registrar)
+$(document).on("click", "#btnRegistrarNoticia", function () {
+  $("#formNoticia")[0].reset();
+  $("#edit_id").val("");
+  $("#btnRegistrarNoticia").removeClass("d-none");
+  $("#btnEditarNoticia").addClass("d-none");
+});
+
+// Envío AJAX para edición de noticia
+$(document).on("click", "#btnEditarNoticia", function (e) {
+  e.preventDefault();
+  var form = $("#formNoticia");
+  var formData = form.serialize();
+  $.ajax({
+    url: window.location.pathname,
+    type: "POST",
+    data: formData,
+    headers: { "X-Requested-With": "XMLHttpRequest" },
+    success: function (data) {
+      $("main.col-md-9").html(data);
+      mostrarToast("Noticia editada correctamente", "info");
+      $("#formNoticia")[0].reset();
+      $("#edit_id").val("");
+      $("#btnRegistrarNoticia").removeClass("d-none");
+      $("#btnEditarNoticia").addClass("d-none");
+      $("html, body").animate(
+        { scrollTop: $("#formNoticia").offset().top - 40 },
+        400
+      );
+      $("#titulo").focus();
+    },
+    error: function () {
+      mostrarToast("Error al editar noticia", "danger");
+    },
+  });
+});
+
+// Validación extra: solo permitir registrar noticia si usuario_id está definido
+$(document).on("submit", "#formNoticia", function (e) {
+  if (!$("#usuario_id").val()) {
+    e.preventDefault();
+    mostrarToast("Selecciona un usuario válido para la noticia", "danger");
+    $("#usuario_nombre").focus();
+    return false;
+  }
+});
+
+// Mejorar experiencia visual del autocompletado
+$(document).on("input", "#usuario_nombre", function () {
+  $("#usuario_nombre").addClass("is-loading");
+});
+$(document).on("click", ".usuario-sugerido", function () {
+  $("#usuario_nombre").removeClass("is-loading").addClass("is-valid");
+});
+$(document).on("blur", "#usuario_nombre", function () {
+  $("#usuario_nombre").removeClass("is-loading");
+});
+
+// Al perder foco en usuario_nombre, si coincide con un usuario del datalist, asignar el usuario_id
+$(document).on("blur", "#usuario_nombre", function () {
+  var nombre = $(this).val();
+  var id = "";
+  $("#usuariosList option").each(function () {
+    if ($(this).val() === nombre) {
+      id = $(this).data("id");
+      return false;
+    }
+  });
+  $("#usuario_id").val(id);
+});
+
+// Ver imagen de noticia en modal grande
+$(document).on("click", ".img-noticia-modal", function () {
+  var src = $(this).data("img");
+  $("#imgModalNoticia").attr("src", src);
+  $("#modalImagenNoticia").modal("show");
+});
+
+// Validación frontend: imagen no mayor a 2MB
+$(document).on("change", "#imagen", function () {
+  var file = this.files[0];
+  if (file && file.size > 2 * 1024 * 1024) {
+    mostrarToast("La imagen no debe superar los 2MB", "danger");
+    $(this).val("");
+  }
 });

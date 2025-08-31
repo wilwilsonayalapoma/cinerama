@@ -24,30 +24,17 @@
         <div class="row">
           <div class="col">
        <div id="newsCarousel" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner">
-      <div class="carousel-item active" data-bs-interval="5000">
-        <a href="https://www.oep.org.bo/"><img src="assets/img/Banner Resultaos (CINERAMA MULTIMEDIA)_Mesa de trabajo 1.png" class="d-block w-100" alt="Noticia 1" style="height:150px; object-fit:cover;cursor: pointer;"></a>
+    <div class="carousel-inner" id="carousel-images">
+        <!-- Las imágenes del carrusel se cargarán dinámicamente aquí -->
       </div>
-      
-      <div class="carousel-item" data-bs-interval="5000">
-        <a href="https://www.oep.org.bo/"><img src="assets/img/Banner-CINERAMA-MULTIMEDIA-Jurados_Mesa-de-trabajo-1.png" class="d-block w-100" alt="Noticia 2" style="height:150px; object-fit:cover; cursor: pointer;"></a>
-      </div>
-      
-      <div class="carousel-item" data-bs-interval="5000">
-        <a href="https://www.oep.org.bo/"><img src="assets/img/Banner-CINERAMA-MULTIMEDIA-Sirepre_Mesa-de-trabajo-1.png" class="d-block w-100" alt="Noticia 3" style="height:150px; object-fit:cover; cursor: pointer;"></a>
-      </div>
-      
-      <div class="carousel-item" data-bs-interval="5000">
-        <a href="https://www.oep.org.bo/"><img src="assets/img/fondo1-1.webp" class="d-block w-100" alt="Noticia 4" style="height:150px; object-fit:cover; cursor: pointer;"></a>
-      </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Anterior</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Siguiente</span>
-                </button>
+      <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Siguiente</span>
+      </button>
         </div>
       </div>
 
@@ -242,5 +229,23 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- JS personalizado -->
     <script src="js/script.js"></script>
+    <script>
+$(document).ready(function() {
+  $.getJSON('get_carrusel.php', function(data) {
+    var $carousel = $('#carousel-images');
+    $carousel.empty();
+    if (data.length === 0) {
+      $carousel.append('<div class="carousel-item active"><img src="assets/img/fondo1-1.webp" class="d-block w-100" alt="Carrusel" style="height:150px; object-fit:cover;"></div>');
+    } else {
+      data.forEach(function(img, i) {
+        var active = i === 0 ? 'active' : '';
+        var linkStart = img.link ? '<a href="' + img.link + '" target="_blank">' : '';
+        var linkEnd = img.link ? '</a>' : '';
+        $carousel.append('<div class="carousel-item ' + active + '" data-bs-interval="5000">' + linkStart + '<img src="' + img.imagen + '" class="d-block w-100" alt="' + img.nombre + '" style="height:150px; object-fit:cover; cursor:pointer;">' + linkEnd + '</div>');
+      });
+    }
+  });
+});
+</script>
   </body>
 </html>

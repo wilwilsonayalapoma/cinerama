@@ -1,4 +1,5 @@
 <?php
+include_once __DIR__ . '/../config/db.php';
 // Módulo de página de inicio con video como noticia principal
 ?>
 <section class="news-section">
@@ -23,65 +24,30 @@
                     </div>
                 </div>
             </div>
-            
             <h2 class="section-title my-4">Últimas Noticias</h2>
             <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="card article-card">
-                        <img src="https://via.placeholder.com/400x250?text=Noticia+1" class="card-img-top" alt="Noticia 1">
-                        <div class="card-body">
-                            <span class="badge bg-primary mb-2">Nacional</span>
-                            <h5 class="card-title">Título de la noticia 1</h5>
-                            <p class="card-text">Breve descripción de la noticia que aparecerá aquí como resumen.</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <a href="#" class="btn btn-primary btn-sm">Leer más</a>
-                                <small class="text-muted">Hace 2 horas</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="card article-card">
-                        <img src="https://via.placeholder.com/400x250?text=Noticia+2" class="card-img-top" alt="Noticia 2">
-                        <div class="card-body">
-                            <span class="badge bg-success mb-2">Internacional</span>
-                            <h5 class="card-title">Título de la noticia 2</h5>
-                            <p class="card-text">Breve descripción de la noticia que aparecerá aquí como resumen.</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <a href="#" class="btn btn-primary btn-sm">Leer más</a>
-                                <small class="text-muted">Hace 4 horas</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="card article-card">
-                        <img src="https://via.placeholder.com/400x250?text=Noticia+3" class="card-img-top" alt="Noticia 3">
-                        <div class="card-body">
-                            <span class="badge bg-warning mb-2">Deportes</span>
-                            <h5 class="card-title">Título de la noticia 3</h5>
-                            <p class="card-text">Breve descripción de la noticia que aparecerá aquí como resumen.</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <a href="#" class="btn btn-primary btn-sm">Leer más</a>
-                                <small class="text-muted">Hace 6 horas</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="card article-card">
-                        <img src="https://via.placeholder.com/400x250?text=Noticia+4" class="card-img-top" alt="Noticia 4">
-                        <div class="card-body">
-                            <span class="badge bg-info mb-2">Cultura</span>
-                            <h5 class="card-title">Título de la noticia 4</h5>
-                            <p class="card-text">Breve descripción de la noticia que aparecerá aquí como resumen.</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <a href="#" class="btn btn-primary btn-sm">Leer más</a>
-                                <small class="text-muted">Ayer</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<?php
+$noticias = $conn->query("SELECT n.*, c.nombre as categoria, c.color as categoria_color FROM noticias n LEFT JOIN categorias c ON n.categoria_id = c.id ORDER BY n.fecha DESC LIMIT 4");
+while ($noticia = $noticias->fetch_assoc()) {
+    $img = !empty($noticia['imagen']) ? 'assets/img/' . htmlspecialchars($noticia['imagen']) : 'https://via.placeholder.com/400x250?text=Sin+Imagen';
+    $categoria = $noticia['categoria'] ?? 'Sin categoría';
+    $cat_color = !empty($noticia['categoria_color']) ? $noticia['categoria_color'] : 'secondary';
+    echo '<div class="col-md-6 mb-4">';
+    echo '  <div class="card article-card">';
+    echo '    <img src="' . $img . '" class="card-img-top" alt="Noticia" style="height:220px;object-fit:cover;">';
+    echo '    <div class="card-body">';
+    echo '      <span class="badge" style="background:' . htmlspecialchars($cat_color) . ';color:#fff;">' . htmlspecialchars($categoria) . '</span>';
+    echo '      <h5 class="card-title">' . htmlspecialchars($noticia['titulo']) . '</h5>';
+    echo '      <p class="card-text">' . htmlspecialchars($noticia['resumen']) . '</p>';
+    echo '      <div class="d-flex justify-content-between align-items-center">';
+    echo '        <a href="noticia.php?id=' . $noticia['id'] . '" class="btn btn-primary btn-sm">Leer más</a>';
+    echo '        <small class="text-muted">' . date('d/m/Y H:i', strtotime($noticia['fecha'])) . '</small>';
+    echo '      </div>';
+    echo '    </div>';
+    echo '  </div>';
+    echo '</div>';
+}
+?>
             </div>
         </div>
         
