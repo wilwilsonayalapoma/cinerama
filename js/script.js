@@ -237,6 +237,79 @@ $(document).ready(function () {
 
   // Inicializar tooltips de Bootstrap
   $('[data-bs-toggle="tooltip"]').tooltip();
+
+    // SPA: Navegación y renderizado de noticia individual
+    $(document).on('click', '.btn-leer-mas', function (e) {
+      e.preventDefault();
+      var noticiaId = $(this).data('id');
+      if (noticiaId) {
+        window.location.hash = '#noticia/' + noticiaId;
+      }
+    });
+
+    function renderNoticia(noticia) {
+      var comentariosHtml = '';
+      if (noticia.comentarios && noticia.comentarios.length > 0) {
+        comentariosHtml = '<h5 class="mt-4">Comentarios</h5><ul class="list-group mb-3">';
+        noticia.comentarios.forEach(function(com) {
+          comentariosHtml += `<li class="list-group-item"><strong>${com.autor || 'Anónimo'}:</strong> ${com.comentario} <span class="text-muted float-end">${com.fecha}</span></li>`;
+        });
+        comentariosHtml += '</ul>';
+      } else {
+        comentariosHtml = '<p class="text-muted">Sin comentarios.</p>';
+      }
+      var html = `
+        <div class="card mb-4">
+          <img src="${noticia.imagen}" class="card-img-top" alt="${noticia.titulo}" style="max-height:350px;object-fit:cover;">
+          <div class="card-body">
+            <h2 class="card-title">${noticia.titulo}</h2>
+            <span class="badge" style="background:${noticia.categoria_color};color:#fff;">${noticia.categoria}</span>
+            <span class="badge bg-warning ms-2"><i class="fa fa-star"></i> ${noticia.destacados}</span>
+            <span class="badge bg-info ms-2"><i class="fa fa-comments"></i> ${noticia.comentarios.length}</span>
+            <p class="mt-3">${noticia.contenido}</p>
+            <p class="text-muted">Por <strong>${noticia.autor}</strong> el ${noticia.fecha}</p>
+          </div>
+        </div>
+        <div class="card mb-4">
+          <div class="card-body">
+            ${comentariosHtml}
+          </div>
+        </div>
+        <button class="btn btn-secondary" id="volverInicio"><i class="fa fa-arrow-left"></i> Volver</button>
+      `;
+      $('#spa-content').html(html);
+    }
+
+    function cargarNoticiaPorHash() {
+      var hash = window.location.hash;
+      var match = hash.match(/^#noticia[\/-](\d+)$/);
+      if (match) {
+        var noticiaId = match[1];
+        $('#spa-content').html('<div class="text-center py-5"><div class="spinner-border text-primary"></div><p>Cargando noticia...</p></div>');
+        $.get('api/noticia.php?id=' + noticiaId, function(data) {
+          if (data && !data.error) {
+            renderNoticia(data);
+          } else {
+            $('#spa-content').html('<div class="alert alert-danger">No se encontró la noticia.</div>');
+          }
+        }, 'json').fail(function() {
+          $('#spa-content').html('<div class="alert alert-danger">Error al cargar la noticia.</div>');
+        });
+      }
+    }
+
+    $(window).on('hashchange', function() {
+      cargarNoticiaPorHash();
+    });
+
+    // Volver al inicio desde noticia individual
+    $(document).on('click', '#volverInicio', function() {
+      window.location.hash = '';
+      loadPage('home');
+    });
+
+    // Al cargar la página, si hay hash de noticia, mostrarla
+    cargarNoticiaPorHash();
 });
 
 // Toast Bootstrap para mensajes

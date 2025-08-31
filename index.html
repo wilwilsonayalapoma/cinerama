@@ -18,29 +18,25 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <!-- Header (sería un include en PHP) -->
+    <!-- SPA HEADER & NAVBAR -->
     <header>
       <div class="container-fluid bg-dark text-white py-2 text-center">
         <div class="row">
-          <div class="col">
-       <div id="newsCarousel" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner" id="carousel-images">
-        <!-- Las imágenes del carrusel se cargarán dinámicamente aquí -->
-      </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Anterior</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Siguiente</span>
-      </button>
+          <div class="col-12 mb-2">
+            <h1>Cinerama Tv</h1>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div id="spa-carrusel"></div>
+          </div>
         </div>
       </div>
-
       <nav class="navbar navbar-expand-lg navbar-light bg-custom">
         <div class="container">
-          <a class="navbar-brand" href="#">CineramaTV</a>
+          <a class="navbar-brand" href="#home" id="spa-home">
+            <img src="assets/img/sin-fondo.png" alt="CineramaTV" style="height:60px;object-fit:contain;cursor:pointer;" id="navbar-logo">
+          </a>
           <button
             class="navbar-toggler"
             type="button"
@@ -52,84 +48,124 @@
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
               <li class="nav-item">
-                <a
-                  class="nav-link active-nav spa-link"
-                  data-page="home"
-                  href="#"
-                  >Inicio</a
-                >
+                <a class="nav-link" href="#home">Inicio</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link spa-link" data-page="national" href="#"
-                  >Nacional</a
-                >
+                <a class="nav-link" href="#national">Nacional</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link spa-link" data-page="international" href="#"
-                  >Internacional</a
-                >
+                <a class="nav-link" href="#international">Internacional</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link spa-link" data-page="sports" href="#"
-                  >Deportes</a
-                >
+                <a class="nav-link" href="#sports">Deportes</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link spa-link" data-page="culture" href="#"
-                  >Cultura</a
-                >
+                <a class="nav-link" href="#culture">Cultura</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link spa-link" data-page="video" href="#"
-                  >Video</a
-                >
+                <a class="nav-link" href="#video">Video</a>
               </li>
             </ul>
-            <form class="d-flex">
-              <input
-                class="form-control me-2"
-                type="search"
-                placeholder="Buscar..."
-                aria-label="Search"
-              />
-              <button class="btn btn-outline-primary" type="submit">
-                Buscar
-              </button>
-              <!-- Icono de usuario -->
-              <button type="button" class="btn btn-outline-secondary ms-2" data-bs-toggle="modal" data-bs-target="#loginModal">
-                <i class="fa fa-user"></i>
-              </button>
-            </form>
-          </div>
-        </div>
-      </nav>
+            <ul class="navbar-nav ms-auto">
+                <form class="d-flex me-3" role="search" id="navbarSearchForm">
+                  <input class="form-control" type="search" placeholder="Buscar..." aria-label="Buscar" id="navbarSearchInput" style="width: 160px;">
+                  <button class="btn btn-outline-light ms-2" type="submit" id="navbarSearchBtn">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </form>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  href="#"
+                  data-bs-toggle="modal"
+                  data-bs-target="#loginModal"
+                <a
+                  class="nav-link"
+                  href="#"
+                  data-bs-toggle="modal"
+                  data-bs-target="#loginModal"
+                >
+                  <i class="fa fa-user-circle fa-lg" style="color: #fff"></i>
+                </a>
     </header>
 
+    <!-- SPA MAIN CONTAINER -->
+    <main class="container py-5">
+      <div id="spa-view"></div>
+    </main>
+
     <!-- Modal de inicio de sesión -->
-    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div
+      class="modal fade"
+      id="loginModal"
+      tabindex="-1"
+      aria-labelledby="loginModalLabel"
+      aria-hidden="true"
+    >
       <div class="modal-dialog">
-        <div class="modal-content" style="background:#fff; border-radius:16px; box-shadow:0 4px 24px rgba(41,62,90,0.15);">
-          <div class="modal-header" style="border-bottom:1px solid #e3e3e3;">
-            <h5 class="modal-title" id="loginModalLabel" style="color:#293e5a; font-weight:bold;">Iniciar sesión</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        <div
+          class="modal-content"
+          style="
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(41, 62, 90, 0.15);
+          "
+        >
+          <div class="modal-header" style="border-bottom: 1px solid #e3e3e3">
+            <h5
+              class="modal-title"
+              id="loginModalLabel"
+              style="color: #293e5a; font-weight: bold"
+            >
+              Iniciar sesión
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"
+            ></button>
           </div>
           <div class="modal-body">
             <form id="loginForm">
               <div class="mb-3">
-                <label for="loginEmail" class="form-label">Correo electrónico</label>
-                <input type="email" class="form-control" id="loginEmail" placeholder="correo@ejemplo.com" required>
+                <label for="loginEmail" class="form-label"
+                  >Correo electrónico</label
+                >
+                <input
+                  type="email"
+                  class="form-control"
+                  id="loginEmail"
+                  placeholder="correo@ejemplo.com"
+                  required
+                />
                 <div class="invalid-feedback">Ingresa un correo válido.</div>
               </div>
               <div class="mb-3">
                 <label for="loginPassword" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="loginPassword" placeholder="Contraseña" required>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="loginPassword"
+                  placeholder="Contraseña"
+                  required
+                />
                 <div class="invalid-feedback">Ingresa tu contraseña.</div>
               </div>
-              <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+              <button type="submit" class="btn btn-primary w-100">
+                Ingresar
+              </button>
             </form>
             <div class="text-center mt-3">
               <span>¿No tienes cuenta?</span>
-              <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal">Registrarse</a>
+              <a
+                href="#"
+                class="text-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#registerModal"
+                data-bs-dismiss="modal"
+                >Registrarse</a
+              >
             </div>
           </div>
         </div>
@@ -137,51 +173,113 @@
     </div>
 
     <!-- Modal de registro -->
-    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div
+      class="modal fade"
+      id="registerModal"
+      tabindex="-1"
+      aria-labelledby="registerModalLabel"
+      aria-hidden="true"
+    >
       <div class="modal-dialog">
-        <div class="modal-content" style="background:#fff; border-radius:16px; box-shadow:0 4px 24px rgba(41,62,90,0.15);">
-          <div class="modal-header" style="border-bottom:1px solid #e3e3e3;">
-            <h5 class="modal-title" id="registerModalLabel" style="color:#293e5a; font-weight:bold;">Registrarse</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        <div
+          class="modal-content"
+          style="
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(41, 62, 90, 0.15);
+          "
+        >
+          <div class="modal-header" style="border-bottom: 1px solid #e3e3e3">
+            <h5
+              class="modal-title"
+              id="registerModalLabel"
+              style="color: #293e5a; font-weight: bold"
+            >
+              Registrarse
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"
+            ></button>
           </div>
           <div class="modal-body">
             <form id="registerForm">
               <div class="mb-3">
-                <label for="registerName" class="form-label">Nombre completo</label>
-                <input type="text" class="form-control" id="registerName" placeholder="Nombre completo" required>
+                <label for="registerName" class="form-label"
+                  >Nombre completo</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="registerName"
+                  placeholder="Nombre completo"
+                  required
+                />
                 <div class="invalid-feedback">Ingresa tu nombre completo.</div>
               </div>
               <div class="mb-3">
-                <label for="registerEmail" class="form-label">Correo electrónico</label>
-                <input type="email" class="form-control" id="registerEmail" placeholder="correo@ejemplo.com" required>
+                <label for="registerEmail" class="form-label"
+                  >Correo electrónico</label
+                >
+                <input
+                  type="email"
+                  class="form-control"
+                  id="registerEmail"
+                  placeholder="correo@ejemplo.com"
+                  required
+                />
                 <div class="invalid-feedback">Ingresa un correo válido.</div>
               </div>
               <div class="mb-3">
-                <label for="registerPassword" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="registerPassword" placeholder="Contraseña" required>
+                <label for="registerPassword" class="form-label"
+                  >Contraseña</label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="registerPassword"
+                  placeholder="Contraseña"
+                  required
+                />
                 <div class="invalid-feedback">Ingresa una contraseña.</div>
               </div>
               <div class="mb-3">
-                <label for="registerPassword2" class="form-label">Verificar contraseña</label>
-                <input type="password" class="form-control" id="registerPassword2" placeholder="Repite la contraseña" required>
-                <div class="invalid-feedback">Las contraseñas no coinciden.</div>
+                <label for="registerPassword2" class="form-label"
+                  >Verificar contraseña</label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="registerPassword2"
+                  placeholder="Repite la contraseña"
+                  required
+                />
+                <div class="invalid-feedback">
+                  Las contraseñas no coinciden.
+                </div>
               </div>
-              <button type="submit" class="btn btn-success w-100">Registrarse</button>
+              <button type="submit" class="btn btn-success w-100">
+                Registrarse
+              </button>
             </form>
             <div class="text-center mt-3">
               <span>¿Ya tienes cuenta?</span>
-              <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-dismiss="modal">Iniciar sesión</a>
+              <a
+                href="#"
+                class="text-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#loginModal"
+                data-bs-dismiss="modal"
+                >Iniciar sesión</a
+              >
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Contenido Principal (carga dinámica SPA) -->
-    <main class="container my-3 spa-content" id="spa-content">
-      <!-- El contenido se carga aquí dinámicamente mediante AJAX -->
-      <?php include 'modules/home.php'; ?>
-    </main>
 
     <!-- Footer (sería un include en PHP) -->
     <footer class="footer-custom text-white py-4 mt-5">
@@ -225,27 +323,385 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- jQuery para AJAX -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- JS personalizado -->
-    <script src="js/script.js"></script>
     <script>
-$(document).ready(function() {
-  $.getJSON('get_carrusel.php', function(data) {
-    var $carousel = $('#carousel-images');
-    $carousel.empty();
-    if (data.length === 0) {
-      $carousel.append('<div class="carousel-item active"><img src="assets/img/fondo1-1.webp" class="d-block w-100" alt="Carrusel" style="height:150px; object-fit:cover;"></div>');
-    } else {
-      data.forEach(function(img, i) {
-        var active = i === 0 ? 'active' : '';
-        var linkStart = img.link ? '<a href="' + img.link + '" target="_blank">' : '';
-        var linkEnd = img.link ? '</a>' : '';
-        $carousel.append('<div class="carousel-item ' + active + '" data-bs-interval="5000">' + linkStart + '<img src="' + img.imagen + '" class="d-block w-100" alt="' + img.nombre + '" style="height:150px; object-fit:cover; cursor:pointer;">' + linkEnd + '</div>');
+      // Renderiza el carrusel dinámico desde la base de datos
+      function renderCarrusel() {
+        $.getJSON("api/carrusel.php", function(data) {
+          if (!data || !data.length) {
+            $("#spa-carrusel").html("");
+            return;
+          }
+          var html = '<div id="cineramaCarrusel" class="carousel slide" data-bs-ride="carousel">';
+          html += '<div class="carousel-inner">';
+          data.forEach(function(item, idx) {
+            html += `<div class="carousel-item${idx === 0 ? ' active' : ''}">`;
+            html += `<img src="${item.imagen}" class="d-block w-100" alt="${item.titulo}" style="max-height:320px;object-fit:cover;">`;
+            html += `<div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-3 p-2">`;
+            html += `<h5>${item.titulo}</h5><p>${item.descripcion}</p>`;
+            html += '</div></div>';
+          });
+          html += '</div>';
+          html += '<button class="carousel-control-prev" type="button" data-bs-target="#cineramaCarrusel" data-bs-slide="prev">';
+          html += '<span class="carousel-control-prev-icon" aria-hidden="true"></span>';
+          html += '<span class="visually-hidden">Anterior</span></button>';
+          html += '<button class="carousel-control-next" type="button" data-bs-target="#cineramaCarrusel" data-bs-slide="next">';
+          html += '<span class="carousel-control-next-icon" aria-hidden="true"></span>';
+          html += '<span class="visually-hidden">Siguiente</span></button>';
+          html += '</div>';
+          $("#spa-carrusel").html(html);
+        });
+      }
+
+      // SPA Router y Render
+      function renderView(route) {
+        const view = document.getElementById("spa-view");
+        if (route === "#home" || route === "" || route === "#") {
+          view.innerHTML = '<div class="text-center"><div class="spinner-border"></div><p>Cargando página principal...</p></div>';
+          $.getJSON("api/home.php", function (data) {
+            var html = `<section class="news-section"><div class="row">`;
+            html += `<div class="col-md-8">`;
+            // Video principal
+            html += `<div class="video-container mb-4"><iframe src="${data.video.src}" allowfullscreen></iframe></div>`;
+            html += `<div class="mb-4"><h2 class="mb-3">${data.video.titulo}</h2><p class="lead">${data.video.descripcion}</p><div class="d-flex justify-content-between align-items-center"><div><span class="text-muted">Publicado el ${data.video.fecha}</span>`;
+            if (data.video.en_vivo) html += '<span class="badge bg-danger ms-2">En vivo</span>';
+            html += `</div><div><button class="btn btn-outline-primary btn-sm me-2"><i class="fas fa-share-alt"></i> Compartir</button><button class="btn btn-outline-secondary btn-sm"><i class="fas fa-bookmark"></i> Guardar</button></div></div></div>`;
+            html += `<h2 class="section-title my-4">Últimas Noticias</h2><div class="row">`;
+            data.ultimas.forEach(function (noticia) {
+              var img = noticia.imagen ? noticia.imagen : 'https://via.placeholder.com/400x250?text=Sin+Imagen';
+              var categoria = noticia.categoria || 'Sin categoría';
+              var cat_color = noticia.categoria_color || 'secondary';
+              html += `<div class="col-md-6 mb-4"><div class="card article-card"><img src="${img}" class="card-img-top" alt="Noticia" style="height:220px;object-fit:cover;"><div class="card-body"><span class="badge" style="background:${cat_color};color:#fff;">${categoria}</span><h5 class="card-title">${noticia.titulo}</h5><p class="card-text">${noticia.resumen || ''}</p><div class="d-flex justify-content-between align-items-center">
+                <button class="btn btn-primary btn-sm leer-mas-btn" data-id="${noticia.id}">Leer más</button>
+                <div>
+                  <span class="badge bg-warning text-dark me-1"><i class="fas fa-star"></i> ${noticia.destacados || 0}</span>
+                  <span class="badge bg-secondary"><i class="fas fa-comments"></i> ${noticia.comentarios || 0}</span>
+                </div>
+                <small class="text-muted ms-2">${noticia.fecha}</small>
+              </div></div></div></div>`;
+            });
+            html += `</div></div>`;
+            // Columna lateral
+            html += `<div class="col-md-4">`;
+            // Destacadas del día
+            html += `<div class="bg-light-custom p-3 rounded mb-4"><h4>Destacadas del día</h4><div class="list-group">`;
+            if ((data.destacadas_dia || []).length === 0) {
+              html += `<div class='text-muted p-3'>No hay noticias destacadas hoy.</div>`;
+            } else {
+              data.destacadas_dia.slice(0,3).forEach(function(dest) {
+                html += `<a href="#noticia-${dest.id}" class="list-group-item list-group-item-action">
+                  <div class="d-flex align-items-center">
+                    <img src="${dest.imagen || 'assets/img/fondo1-1.webp'}" alt="miniatura" class="me-2 rounded" style="width:48px;height:48px;object-fit:cover;">
+                    <div>
+                      <h6 class="mb-1">${dest.titulo}</h6>
+                      <span class="badge ms-1" style="background:${dest.categoria_color};color:#fff;">${dest.destacados} <i class='fas fa-star'></i></span>
+                    </div>
+                  </div>
+                  <p class="mb-1">${dest.resumen || ''}</p>
+                  <small class="text-muted">${dest.fecha}</small>
+                </a>`;
+              });
+            }
+            html += `</div></div>`;
+            // Más comentadas
+            html += `<div class="bg-light-custom p-3 rounded mb-4"><h4>Más comentadas</h4><div class="list-group">`;
+            (data.mas_comentadas || []).slice(0,3).forEach(function(noticia) {
+              html += `<a href="#noticia-${noticia.id}" class="list-group-item list-group-item-action">
+                <div class="d-flex align-items-center">
+                  <img src="${noticia.imagen || 'assets/img/fondo1-1.webp'}" alt="miniatura" class="me-2 rounded" style="width:48px;height:48px;object-fit:cover;">
+                  <div>
+                    <h6 class="mb-1">${noticia.titulo}</h6>
+                    <span class="badge ms-1 bg-secondary">${noticia.comentarios} <i class='fas fa-comments'></i></span>
+                  </div>
+                </div>
+                <p class="mb-1">${noticia.resumen || ''}</p>
+                <small class="text-muted">${noticia.fecha}</small>
+              </a>`;
+            });
+            html += `</div></div>`;
+            // Clasificación Deportiva
+            html += `<div class="bg-light-custom p-3 rounded mb-4"><h4>Clasificación Deportiva</h4><ul class="list-group">`;
+            (data.clasificacion || []).forEach(function(eq) {
+              html += `<li class="list-group-item d-flex justify-content-between align-items-center">${eq.equipo}<span class="badge bg-primary rounded-pill">${eq.puntos} pts</span></li>`;
+            });
+            html += `</ul></div>`;
+            // Boletín
+            html += `<div class="bg-light-custom p-3 rounded"><h4>Boletín informativo</h4><p>Suscríbete para recibir las últimas noticias</p><form id="newsletterForm"><div class="mb-3"><input type="email" class="form-control" placeholder="Tu email" required></div><button type="submit" class="btn btn-primary w-100">Suscribirse</button></form></div>`;
+            html += `</div></div></section>`;
+            view.innerHTML = html;
+            // SPA: Navegación al detalle
+            $(".leer-mas-btn").click(function () {
+              var id = $(this).data("id");
+              window.location.hash = "#noticia-" + id;
+            });
+            // Newsletter form
+            $("#newsletterForm").submit(function(e){
+              e.preventDefault();
+              alert("¡Gracias por suscribirte!");
+            });
+          });
+        } else if (route === "#national" || route === "#international" || route === "#culture" || route === "#sports") {
+          let section = "Nacional";
+          let api = "api/national.php";
+          if (route === "#international") { section = "Internacional"; api = "api/international.php"; }
+          if (route === "#culture") { section = "Cultura"; api = "api/culture.php"; }
+          if (route === "#sports") { section = "Deportes"; api = "api/sports.php"; }
+          view.innerHTML = `<h2 class="mb-4">Noticias ${section}</h2><div id="national-list" class="row"></div>`;
+          $.getJSON(api, function (data) {
+            var html = "";
+            if (data.length > 0) {
+              html += `<div class="col-lg-8">
+                <div class="row">`;
+              // Primera noticia en grande
+              var noticia = data[0];
+              html += `<div class="col-12 mb-4">
+                <div class="card article-card shadow-lg">
+                  <img src="${noticia.imagen}" class="card-img-top" alt="Noticia" style="height:340px;object-fit:cover;">
+                  <div class="card-body">
+                    <span class="badge" style="background:${noticia.categoria_color};color:#fff;">${noticia.categoria}</span>
+                    <h2 class="card-title mt-2 mb-3">${noticia.titulo}</h2>
+                    <p class="card-text" style="font-size:1.2em;">${noticia.resumen || ''}</p>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <span><i class="fas fa-star text-warning"></i> <span class="destacados-count" data-id="${noticia.id}">${noticia.destacados}</span> Destacados</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <button class="btn btn-primary btn-sm leer-mas-btn" data-id="${noticia.id}">Leer más</button>
+                      <button class="btn btn-warning btn-sm destacar-btn" data-id="${noticia.id}"><i class="fas fa-star"></i> Destacar</button>
+                      <small class="text-muted">${noticia.fecha}</small>
+                    </div>
+                  </div>
+                </div>
+              </div>`;
+              // Siguientes 4 noticias en formato regular
+              for (var i = 1; i < Math.min(data.length, 5); i++) {
+                var noticia = data[i];
+                html += `<div class="col-md-6 mb-4">
+                  <div class="card article-card">
+                    <img src="${noticia.imagen}" class="card-img-top" alt="Noticia" style="height:220px;object-fit:cover;">
+                    <div class="card-body">
+                      <span class="badge" style="background:${noticia.categoria_color};color:#fff;">${noticia.categoria}</span>
+                      <h5 class="card-title">${noticia.titulo}</h5>
+                      <p class="card-text">${noticia.resumen || ''}</p>
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-warning text-dark me-1"><i class="fas fa-star"></i> ${noticia.destacados || 0}</span>
+                        <span class="badge bg-secondary"><i class="fas fa-comments"></i> ${noticia.comentarios || 0}</span>
+                      </div>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <button class="btn btn-primary btn-sm leer-mas-btn" data-id="${noticia.id}">Leer más</button>
+                        <button class="btn btn-warning btn-sm destacar-btn" data-id="${noticia.id}"><i class="fas fa-star"></i> Destacar</button>
+                        <small class="text-muted">${noticia.fecha}</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>`;
+              }
+              html += `</div></div>`;
+              // Noticias destacadas reales (las 2 con más destacados)
+              var destacadas = [...data].sort((a,b)=>b.destacados-a.destacados).slice(0,4);
+              html += `<div class="col-lg-4">
+                <div class="bg-light p-3 rounded mb-4 border border-2" style="border-color:${noticia.categoria_color};">
+                  <h4 class="mb-3" style="color:${noticia.categoria_color};font-weight:bold;">Noticias Destacadas</h4>`;
+              destacadas.forEach(function(dest, idx){
+                html += `<a href="#noticia-${dest.id}" class="list-group-item list-group-item-action mb-2 rounded shadow-sm">
+                  <div class="d-flex w-100 align-items-center justify-content-between">
+                    <img src="${dest.imagen || 'assets/img/fondo1-1.webp'}" alt="miniatura" class="me-2 rounded" style="width:48px;height:48px;object-fit:cover;">
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1">${idx === 0 ? '<span class=\"text-danger fw-bold\">&#9733; </span>' : ''}${dest.titulo}</h6>
+                      <span class="badge ms-1" style="background:${dest.categoria_color};color:#fff;">${dest.destacados} <i class='fas fa-star'></i></span>
+                    </div>
+                  </div>
+                  <p class="mb-1">${dest.resumen || ''}</p>
+                  <small class="text-muted">${dest.fecha}</small>
+                </a>`;
+              });
+              html += `</div>
+                <div class="bg-light p-3 rounded mt-4 border border-2" style="border-color:${noticia.categoria_color};">
+                  <h4 class="mb-3" style="color:${noticia.categoria_color};font-weight:bold;">Boletín informativo</h4>
+                  <p>Suscríbete para recibir las últimas noticias</p>
+                  <form id="newsletterForm"><div class="mb-3"><input type="email" class="form-control" placeholder="Tu email" required></div><button type="submit" class="btn btn-primary w-100">Suscribirse</button></form>
+                </div>
+              </div>`;
+            }
+            document.getElementById("national-list").innerHTML = html;
+            // SPA: Navegación al detalle
+            $(".leer-mas-btn").click(function () {
+              var id = $(this).data("id");
+              window.location.hash = "#noticia-" + id;
+            });
+            // SPA: Destacar noticia
+            $(".destacar-btn").click(function () {
+              var noticiaId = $(this).data("id");
+              var usuarioId = 1; // Reemplaza por el id del usuario logueado
+              var $btn = $(this);
+              $.post("api/destacar.php", { noticia_id: noticiaId, usuario_id: usuarioId }, function(resp) {
+                var data = {};
+                try { data = JSON.parse(resp); } catch(e) {}
+                if (data.success) {
+                  var $count = $(".destacados-count[data-id='" + noticiaId + "']");
+                  $count.text(parseInt($count.text()) + 1);
+                  $btn.prop('disabled', true);
+                } else {
+                  alert(data.msg || 'Ya has destacado esta noticia.');
+                }
+              });
+            });
+          });
+        } else if (route === "#publicidad") {
+          view.innerHTML =
+            '<h2>Publicidad</h2><div id="publicidad-list" class="row"></div>';
+          $.getJSON("api/publicidad.php", function (data) {
+            var html = "";
+            data.forEach(function (img) {
+              html += `<div class=\"col-md-4 mb-4\"><div class=\"card\"><img src=\"${img.imagen}\" class=\"card-img-top\" alt=\"${img.nombre}\" style=\"height:180px;object-fit:cover;\"><div class=\"card-body\"><h5 class=\"card-title\">${img.nombre}</h5>`;
+              if (img.link)
+                html += `<a href=\"${img.link}\" target=\"_blank\" class=\"btn btn-primary btn-sm\">Ir al sitio</a>`;
+              html += "</div></div></div>";
+            });
+            document.getElementById("publicidad-list").innerHTML = html;
+          });
+        } else if (route.startsWith("#noticia-")) {
+          var usuario = null;
+          try {
+            usuario = JSON.parse(localStorage.getItem("usuario"));
+          } catch(e) {}
+          var noticiaId = route.replace("#noticia-", "");
+          view.innerHTML =
+            '<div class="text-center"><div class="spinner-border"></div><p>Cargando noticia...</p></div>';
+          $.getJSON("api/noticia.php?id=" + noticiaId, function (data) {
+            if (data.error) {
+              view.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+              return;
+            }
+            var html = `<div class=\"card mb-4\">
+            <img src=\"${
+              data.imagen
+            }\" class=\"card-img-top\" alt=\"Imagen noticia\" style=\"max-height:350px;object-fit:cover;\">
+            <div class=\"card-body\">
+              <span class=\"badge\" style=\"background:${
+                data.categoria_color
+              };color:#fff;\">${data.categoria}</span>
+              <h2 class=\"card-title mt-2 mb-3\">${data.titulo}</h2>
+              <p class=\"card-text\" style=\"font-size:1.2em;\">${
+                data.contenido
+              }</p>
+              <div class=\"mt-3 mb-3 d-flex gap-2\">
+                <span class=\"text-muted\">Publicado el ${new Date(
+                  data.fecha
+                ).toLocaleDateString()}</span>
+                <span class=\"ms-3\">Por: ${data.autor}</span>
+              </div>
+              <div class=\"mb-4\">
+                <span><i class=\"fas fa-star text-warning\"></i> <span id=\"destacados-count\">${
+                  data.destacados
+                }</span> Destacados</span>
+                ${usuario ? '<button class="btn btn-warning btn-sm ms-2" id="destacar-btn"><i class="fas fa-star"></i> Destacar</button>' : '<button class="btn btn-warning btn-sm ms-2" id="destacar-btn" disabled title="Inicia sesión para destacar"><i class="fas fa-star"></i> Destacar</button>'}
+                <button class=\"btn btn-info btn-sm ms-2\" id=\"compartir-btn\"><i class=\"fas fa-share\"></i> Compartir</button>
+              </div>
+              <button class=\"btn btn-secondary mt-4\" onclick=\"window.location.hash='#national'\">Volver a Nacional</button>
+            </div>
+          </div>`;
+            html += `<div class=\"card mb-4\"><div class=\"card-header bg-light\"><h5 class=\"mb-0\"><i class=\"fas fa-comments\"></i> Comentarios</h5></div><div class=\"card-body\">`;
+            html += `<form id=\"formComentario\" class=\"d-flex mb-3\"><input type=\"text\" class=\"form-control me-2\" name=\"comentario\" placeholder=\"Escribe un comentario...\" maxlength=\"255\" required><button type=\"submit\" class=\"btn btn-success\">Comentar</button></form>`;
+            if(usuario) {
+              html += `<form id=\"formComentario\" class=\"d-flex mb-3\"><input type=\"text\" class=\"form-control me-2\" name=\"comentario\" placeholder=\"Escribe un comentario...\" maxlength=\"255\" required><button type=\"submit\" class=\"btn btn-success\">Comentar</button></form>`;
+            } else {
+              html += `<div class=\"alert alert-warning\">Inicia sesión para comentar.</div>`;
+            }
+            html += '<div id="comentariosList">';
+            if (data.comentarios.length === 0) {
+              html += '<p class="text-muted">No hay comentarios aún.</p>';
+            } else {
+              data.comentarios.forEach(function (c) {
+                html += `<div class=\"mb-2 border-bottom pb-2\"><strong>${
+                  c.autor
+                }</strong> <span class=\"text-muted ms-2\" style=\"font-size:0.9em;\">${new Date(
+                  c.fecha
+                ).toLocaleDateString()}</span><p class=\"mb-1 mt-1\">${
+                  c.comentario
+                }</p></div>`;
+              });
+            }
+            html += "</div></div>";
+            view.innerHTML = html;
+              // Compartir funcionalidad
+              $("#compartir-btn").on("click", function() {
+                var url = window.location.origin + window.location.pathname + "#noticia-" + noticiaId;
+                navigator.clipboard.writeText(url).then(function() {
+                  $("#compartir-btn").text("¡Enlace copiado!");
+                  setTimeout(function() {
+                    $("#compartir-btn").html('<i class="fas fa-share"></i> Compartir');
+                  }, 1500);
+                });
+              });
+            // Interactividad destacar
+            if(usuario) {
+              $("#destacar-btn").click(function () {
+                var usuarioId = usuario.id;
+                $.post(
+                  "api/destacar.php",
+                  { noticia_id: noticiaId, usuario_id: usuarioId },
+                  function (resp) {
+                    var data = {};
+                    try {
+                      data = JSON.parse(resp);
+                    } catch (e) {}
+                    if (data.success) {
+                      var count = parseInt($("#destacados-count").text()) + 1;
+                      $("#destacados-count").text(count);
+                      alert("¡Noticia destacada!");
+                    } else {
+                      alert(data.msg || "Error al destacar.");
+                    }
+                  }
+                );
+              });
+            }
+            // Interactividad comentar
+            if(usuario) {
+              $("#formComentario").submit(function (e) {
+                e.preventDefault();
+                var usuarioId = usuario.id;
+                var comentario = $(this).find('input[name="comentario"]').val();
+                $.post(
+                  "api/comentar.php",
+                  {
+                    noticia_id: noticiaId,
+                    usuario_id: usuarioId,
+                    comentario: comentario,
+                  },
+                  function (resp) {
+                    var data = {};
+                    try {
+                      data = JSON.parse(resp);
+                    } catch (e) {}
+                    if (data.success) {
+                      window.location.hash = "#noticia-" + noticiaId;
+                    } else {
+                      alert(data.msg || "Error al comentar.");
+                    }
+                  }
+                );
+              });
+            }
+          });
+        } else {
+          view.innerHTML = `<h2>Sección en construcción</h2><p>Pronto disponible: ${route.replace(
+            "#",
+            ""
+          )}</p>`;
+        }
+      }
+
+      function spaRouter() {
+        renderView(window.location.hash);
+      }
+      window.addEventListener("hashchange", spaRouter);
+      window.addEventListener("DOMContentLoaded", spaRouter);
+      window.addEventListener("DOMContentLoaded", function() {
+        spaRouter();
+        renderCarrusel();
       });
-    }
-  });
-});
-</script>
+    </script>
   </body>
+</html>
 </html>
