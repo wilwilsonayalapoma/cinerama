@@ -22,17 +22,13 @@
     <header>
       <div class="container-fluid bg-dark text-white py-2 text-center">
         <div class="row">
-          <div class="col-12 mb-2">
-            <h1>Cinerama Tv</h1>
-          </div>
-        </div>
-        <div class="row">
           <div class="col-12">
             <div id="spa-carrusel"></div>
           </div>
         </div>
       </div>
-      <nav class="navbar navbar-expand-lg navbar-light bg-custom">
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-custom">
         <div class="container">
           <a class="navbar-brand" href="#home" id="spa-home">
             <img src="assets/img/sin-fondo.png" alt="CineramaTV" style="height:60px;object-fit:contain;cursor:pointer;" id="navbar-logo">
@@ -280,7 +276,6 @@
       </div>
     </div>
 
-
     <!-- Footer (sería un include en PHP) -->
     <footer class="footer-custom text-white py-4 mt-5">
       <div class="container">
@@ -322,33 +317,40 @@
     </footer>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script>
       // Renderiza el carrusel dinámico desde la base de datos
       function renderCarrusel() {
-        $.getJSON("api/carrusel.php", function(data) {
+        $.getJSON("api/carrusel.php", function (data) {
           if (!data || !data.length) {
             $("#spa-carrusel").html("");
             return;
           }
-          var html = '<div id="cineramaCarrusel" class="carousel slide" data-bs-ride="carousel">';
+          var html =
+            '<div id="cineramaCarrusel" class="carousel slide" data-bs-ride="carousel">';
           html += '<div class="carousel-inner">';
-          data.forEach(function(item, idx) {
-            html += `<div class="carousel-item${idx === 0 ? ' active' : ''}">`;
+          data.forEach(function (item, idx) {
+            html += `<div class="carousel-item${idx === 0 ? " active" : ""}">`;
             html += `<img src="${item.imagen}" class="d-block w-100" alt="${item.titulo}" style="max-height:320px;object-fit:cover;">`;
             html += `<div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-3 p-2">`;
             html += `<h5>${item.titulo}</h5><p>${item.descripcion}</p>`;
-            html += '</div></div>';
+            html += "</div></div>";
           });
-          html += '</div>';
-          html += '<button class="carousel-control-prev" type="button" data-bs-target="#cineramaCarrusel" data-bs-slide="prev">';
-          html += '<span class="carousel-control-prev-icon" aria-hidden="true"></span>';
+          html += "</div>";
+          html +=
+            '<button class="carousel-control-prev" type="button" data-bs-target="#cineramaCarrusel" data-bs-slide="prev">';
+          html +=
+            '<span class="carousel-control-prev-icon" aria-hidden="true"></span>';
           html += '<span class="visually-hidden">Anterior</span></button>';
-          html += '<button class="carousel-control-next" type="button" data-bs-target="#cineramaCarrusel" data-bs-slide="next">';
-          html += '<span class="carousel-control-next-icon" aria-hidden="true"></span>';
+          html +=
+            '<button class="carousel-control-next" type="button" data-bs-target="#cineramaCarrusel" data-bs-slide="next">';
+          html +=
+            '<span class="carousel-control-next-icon" aria-hidden="true"></span>';
           html += '<span class="visually-hidden">Siguiente</span></button>';
-          html += '</div>';
+          html += "</div>";
           $("#spa-carrusel").html(html);
         });
       }
@@ -357,25 +359,39 @@
       function renderView(route) {
         const view = document.getElementById("spa-view");
         if (route === "#home" || route === "" || route === "#") {
-          view.innerHTML = '<div class="text-center"><div class="spinner-border"></div><p>Cargando página principal...</p></div>';
+          view.innerHTML =
+            '<div class="text-center"><div class="spinner-border"></div><p>Cargando página principal...</p></div>';
           $.getJSON("api/home.php", function (data) {
             var html = `<section class="news-section"><div class="row">`;
             html += `<div class="col-md-8">`;
             // Video principal
             html += `<div class="video-container mb-4"><iframe src="${data.video.src}" allowfullscreen></iframe></div>`;
             html += `<div class="mb-4"><h2 class="mb-3">${data.video.titulo}</h2><p class="lead">${data.video.descripcion}</p><div class="d-flex justify-content-between align-items-center"><div><span class="text-muted">Publicado el ${data.video.fecha}</span>`;
-            if (data.video.en_vivo) html += '<span class="badge bg-danger ms-2">En vivo</span>';
+            if (data.video.en_vivo)
+              html += '<span class="badge bg-danger ms-2">En vivo</span>';
             html += `</div><div><button class="btn btn-outline-primary btn-sm me-2"><i class="fas fa-share-alt"></i> Compartir</button><button class="btn btn-outline-secondary btn-sm"><i class="fas fa-bookmark"></i> Guardar</button></div></div></div>`;
             html += `<h2 class="section-title my-4">Últimas Noticias</h2><div class="row">`;
             data.ultimas.forEach(function (noticia) {
-              var img = noticia.imagen ? noticia.imagen : 'https://via.placeholder.com/400x250?text=Sin+Imagen';
-              var categoria = noticia.categoria || 'Sin categoría';
-              var cat_color = noticia.categoria_color || 'secondary';
-              html += `<div class="col-md-6 mb-4"><div class="card article-card"><img src="${img}" class="card-img-top" alt="Noticia" style="height:220px;object-fit:cover;"><div class="card-body"><span class="badge" style="background:${cat_color};color:#fff;">${categoria}</span><h5 class="card-title">${noticia.titulo}</h5><p class="card-text">${noticia.resumen || ''}</p><div class="d-flex justify-content-between align-items-center">
-                <button class="btn btn-primary btn-sm leer-mas-btn" data-id="${noticia.id}">Leer más</button>
+              var img = noticia.imagen
+                ? noticia.imagen
+                : "https://via.placeholder.com/400x250?text=Sin+Imagen";
+              var categoria = noticia.categoria || "Sin categoría";
+              var cat_color = noticia.categoria_color || "secondary";
+              html += `<div class="col-md-6 mb-4"><div class="card article-card"><img src="${img}" class="card-img-top" alt="Noticia" style="height:220px;object-fit:cover;"><div class="card-body"><span class="badge" style="background:${cat_color};color:#fff;">${categoria}</span><h5 class="card-title">${
+                noticia.titulo
+              }</h5><p class="card-text">${
+                noticia.resumen || ""
+              }</p><div class="d-flex justify-content-between align-items-center">
+                <button class="btn btn-primary btn-sm leer-mas-btn" data-id="${
+                  noticia.id
+                }">Leer más</button>
                 <div>
-                  <span class="badge bg-warning text-dark me-1"><i class="fas fa-star"></i> ${noticia.destacados || 0}</span>
-                  <span class="badge bg-secondary"><i class="fas fa-comments"></i> ${noticia.comentarios || 0}</span>
+                  <span class="badge bg-warning text-dark me-1"><i class="fas fa-star"></i> ${
+                    noticia.destacados || 0
+                  }</span>
+                  <span class="badge bg-secondary"><i class="fas fa-comments"></i> ${
+                    noticia.comentarios || 0
+                  }</span>
                 </div>
                 <small class="text-muted ms-2">${noticia.fecha}</small>
               </div></div></div></div>`;
@@ -388,16 +404,24 @@
             if ((data.destacadas_dia || []).length === 0) {
               html += `<div class='text-muted p-3'>No hay noticias destacadas hoy.</div>`;
             } else {
-              data.destacadas_dia.slice(0,3).forEach(function(dest) {
-                html += `<a href="#noticia-${dest.id}" class="list-group-item list-group-item-action">
+              data.destacadas_dia.slice(0, 3).forEach(function (dest) {
+                html += `<a href="#noticia-${
+                  dest.id
+                }" class="list-group-item list-group-item-action">
                   <div class="d-flex align-items-center">
-                    <img src="${dest.imagen || 'assets/img/fondo1-1.webp'}" alt="miniatura" class="me-2 rounded" style="width:48px;height:48px;object-fit:cover;">
+                    <img src="${
+                      dest.imagen || "assets/img/fondo1-1.webp"
+                    }" alt="miniatura" class="me-2 rounded" style="width:48px;height:48px;object-fit:cover;">
                     <div>
                       <h6 class="mb-1">${dest.titulo}</h6>
-                      <span class="badge ms-1" style="background:${dest.categoria_color};color:#fff;">${dest.destacados} <i class='fas fa-star'></i></span>
+                      <span class="badge ms-1" style="background:${
+                        dest.categoria_color
+                      };color:#fff;">${
+                  dest.destacados
+                } <i class='fas fa-star'></i></span>
                     </div>
                   </div>
-                  <p class="mb-1">${dest.resumen || ''}</p>
+                  <p class="mb-1">${dest.resumen || ""}</p>
                   <small class="text-muted">${dest.fecha}</small>
                 </a>`;
               });
@@ -405,23 +429,29 @@
             html += `</div></div>`;
             // Más comentadas
             html += `<div class="bg-light-custom p-3 rounded mb-4"><h4>Más comentadas</h4><div class="list-group">`;
-            (data.mas_comentadas || []).slice(0,3).forEach(function(noticia) {
-              html += `<a href="#noticia-${noticia.id}" class="list-group-item list-group-item-action">
+            (data.mas_comentadas || []).slice(0, 3).forEach(function (noticia) {
+              html += `<a href="#noticia-${
+                noticia.id
+              }" class="list-group-item list-group-item-action">
                 <div class="d-flex align-items-center">
-                  <img src="${noticia.imagen || 'assets/img/fondo1-1.webp'}" alt="miniatura" class="me-2 rounded" style="width:48px;height:48px;object-fit:cover;">
+                  <img src="${
+                    noticia.imagen || "assets/img/fondo1-1.webp"
+                  }" alt="miniatura" class="me-2 rounded" style="width:48px;height:48px;object-fit:cover;">
                   <div>
                     <h6 class="mb-1">${noticia.titulo}</h6>
-                    <span class="badge ms-1 bg-secondary">${noticia.comentarios} <i class='fas fa-comments'></i></span>
+                    <span class="badge ms-1 bg-secondary">${
+                      noticia.comentarios
+                    } <i class='fas fa-comments'></i></span>
                   </div>
                 </div>
-                <p class="mb-1">${noticia.resumen || ''}</p>
+                <p class="mb-1">${noticia.resumen || ""}</p>
                 <small class="text-muted">${noticia.fecha}</small>
               </a>`;
             });
             html += `</div></div>`;
             // Clasificación Deportiva
             html += `<div class="bg-light-custom p-3 rounded mb-4"><h4>Clasificación Deportiva</h4><ul class="list-group">`;
-            (data.clasificacion || []).forEach(function(eq) {
+            (data.clasificacion || []).forEach(function (eq) {
               html += `<li class="list-group-item d-flex justify-content-between align-items-center">${eq.equipo}<span class="badge bg-primary rounded-pill">${eq.puntos} pts</span></li>`;
             });
             html += `</ul></div>`;
@@ -435,17 +465,31 @@
               window.location.hash = "#noticia-" + id;
             });
             // Newsletter form
-            $("#newsletterForm").submit(function(e){
+            $("#newsletterForm").submit(function (e) {
               e.preventDefault();
               alert("¡Gracias por suscribirte!");
             });
           });
-        } else if (route === "#national" || route === "#international" || route === "#culture" || route === "#sports") {
+        } else if (
+          route === "#national" ||
+          route === "#international" ||
+          route === "#culture" ||
+          route === "#sports"
+        ) {
           let section = "Nacional";
           let api = "api/national.php";
-          if (route === "#international") { section = "Internacional"; api = "api/international.php"; }
-          if (route === "#culture") { section = "Cultura"; api = "api/culture.php"; }
-          if (route === "#sports") { section = "Deportes"; api = "api/sports.php"; }
+          if (route === "#international") {
+            section = "Internacional";
+            api = "api/international.php";
+          }
+          if (route === "#culture") {
+            section = "Cultura";
+            api = "api/culture.php";
+          }
+          if (route === "#sports") {
+            section = "Deportes";
+            api = "api/sports.php";
+          }
           view.innerHTML = `<h2 class="mb-4">Noticias ${section}</h2><div id="national-list" class="row"></div>`;
           $.getJSON(api, function (data) {
             var html = "";
@@ -456,17 +500,29 @@
               var noticia = data[0];
               html += `<div class="col-12 mb-4">
                 <div class="card article-card shadow-lg">
-                  <img src="${noticia.imagen}" class="card-img-top" alt="Noticia" style="height:340px;object-fit:cover;">
+                  <img src="${
+                    noticia.imagen
+                  }" class="card-img-top" alt="Noticia" style="height:340px;object-fit:cover;">
                   <div class="card-body">
-                    <span class="badge" style="background:${noticia.categoria_color};color:#fff;">${noticia.categoria}</span>
+                    <span class="badge" style="background:${
+                      noticia.categoria_color
+                    };color:#fff;">${noticia.categoria}</span>
                     <h2 class="card-title mt-2 mb-3">${noticia.titulo}</h2>
-                    <p class="card-text" style="font-size:1.2em;">${noticia.resumen || ''}</p>
+                    <p class="card-text" style="font-size:1.2em;">${
+                      noticia.resumen || ""
+                    }</p>
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                      <span><i class="fas fa-star text-warning"></i> <span class="destacados-count" data-id="${noticia.id}">${noticia.destacados}</span> Destacados</span>
+                      <span><i class="fas fa-star text-warning"></i> <span class="destacados-count" data-id="${
+                        noticia.id
+                      }">${noticia.destacados}</span> Destacados</span>
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
-                      <button class="btn btn-primary btn-sm leer-mas-btn" data-id="${noticia.id}">Leer más</button>
-                      <button class="btn btn-warning btn-sm destacar-btn" data-id="${noticia.id}"><i class="fas fa-star"></i> Destacar</button>
+                      <button class="btn btn-primary btn-sm leer-mas-btn" data-id="${
+                        noticia.id
+                      }">Leer más</button>
+                      <button class="btn btn-warning btn-sm destacar-btn" data-id="${
+                        noticia.id
+                      }"><i class="fas fa-star"></i> Destacar</button>
                       <small class="text-muted">${noticia.fecha}</small>
                     </div>
                   </div>
@@ -477,18 +533,30 @@
                 var noticia = data[i];
                 html += `<div class="col-md-6 mb-4">
                   <div class="card article-card">
-                    <img src="${noticia.imagen}" class="card-img-top" alt="Noticia" style="height:220px;object-fit:cover;">
+                    <img src="${
+                      noticia.imagen
+                    }" class="card-img-top" alt="Noticia" style="height:220px;object-fit:cover;">
                     <div class="card-body">
-                      <span class="badge" style="background:${noticia.categoria_color};color:#fff;">${noticia.categoria}</span>
+                      <span class="badge" style="background:${
+                        noticia.categoria_color
+                      };color:#fff;">${noticia.categoria}</span>
                       <h5 class="card-title">${noticia.titulo}</h5>
-                      <p class="card-text">${noticia.resumen || ''}</p>
+                      <p class="card-text">${noticia.resumen || ""}</p>
                       <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="badge bg-warning text-dark me-1"><i class="fas fa-star"></i> ${noticia.destacados || 0}</span>
-                        <span class="badge bg-secondary"><i class="fas fa-comments"></i> ${noticia.comentarios || 0}</span>
+                        <span class="badge bg-warning text-dark me-1"><i class="fas fa-star"></i> ${
+                          noticia.destacados || 0
+                        }</span>
+                        <span class="badge bg-secondary"><i class="fas fa-comments"></i> ${
+                          noticia.comentarios || 0
+                        }</span>
                       </div>
                       <div class="d-flex justify-content-between align-items-center">
-                        <button class="btn btn-primary btn-sm leer-mas-btn" data-id="${noticia.id}">Leer más</button>
-                        <button class="btn btn-warning btn-sm destacar-btn" data-id="${noticia.id}"><i class="fas fa-star"></i> Destacar</button>
+                        <button class="btn btn-primary btn-sm leer-mas-btn" data-id="${
+                          noticia.id
+                        }">Leer más</button>
+                        <button class="btn btn-warning btn-sm destacar-btn" data-id="${
+                          noticia.id
+                        }"><i class="fas fa-star"></i> Destacar</button>
                         <small class="text-muted">${noticia.fecha}</small>
                       </div>
                     </div>
@@ -497,20 +565,34 @@
               }
               html += `</div></div>`;
               // Noticias destacadas reales (las 2 con más destacados)
-              var destacadas = [...data].sort((a,b)=>b.destacados-a.destacados).slice(0,4);
+              var destacadas = [...data]
+                .sort((a, b) => b.destacados - a.destacados)
+                .slice(0, 4);
               html += `<div class="col-lg-4">
                 <div class="bg-light p-3 rounded mb-4 border border-2" style="border-color:${noticia.categoria_color};">
                   <h4 class="mb-3" style="color:${noticia.categoria_color};font-weight:bold;">Noticias Destacadas</h4>`;
-              destacadas.forEach(function(dest, idx){
-                html += `<a href="#noticia-${dest.id}" class="list-group-item list-group-item-action mb-2 rounded shadow-sm">
+              destacadas.forEach(function (dest, idx) {
+                html += `<a href="#noticia-${
+                  dest.id
+                }" class="list-group-item list-group-item-action mb-2 rounded shadow-sm">
                   <div class="d-flex w-100 align-items-center justify-content-between">
-                    <img src="${dest.imagen || 'assets/img/fondo1-1.webp'}" alt="miniatura" class="me-2 rounded" style="width:48px;height:48px;object-fit:cover;">
+                    <img src="${
+                      dest.imagen || "assets/img/fondo1-1.webp"
+                    }" alt="miniatura" class="me-2 rounded" style="width:48px;height:48px;object-fit:cover;">
                     <div class="flex-grow-1">
-                      <h6 class="mb-1">${idx === 0 ? '<span class=\"text-danger fw-bold\">&#9733; </span>' : ''}${dest.titulo}</h6>
-                      <span class="badge ms-1" style="background:${dest.categoria_color};color:#fff;">${dest.destacados} <i class='fas fa-star'></i></span>
+                      <h6 class="mb-1">${
+                        idx === 0
+                          ? '<span class="text-danger fw-bold">&#9733; </span>'
+                          : ""
+                      }${dest.titulo}</h6>
+                      <span class="badge ms-1" style="background:${
+                        dest.categoria_color
+                      };color:#fff;">${
+                  dest.destacados
+                } <i class='fas fa-star'></i></span>
                     </div>
                   </div>
-                  <p class="mb-1">${dest.resumen || ''}</p>
+                  <p class="mb-1">${dest.resumen || ""}</p>
                   <small class="text-muted">${dest.fecha}</small>
                 </a>`;
               });
@@ -533,17 +615,25 @@
               var noticiaId = $(this).data("id");
               var usuarioId = 1; // Reemplaza por el id del usuario logueado
               var $btn = $(this);
-              $.post("api/destacar.php", { noticia_id: noticiaId, usuario_id: usuarioId }, function(resp) {
-                var data = {};
-                try { data = JSON.parse(resp); } catch(e) {}
-                if (data.success) {
-                  var $count = $(".destacados-count[data-id='" + noticiaId + "']");
-                  $count.text(parseInt($count.text()) + 1);
-                  $btn.prop('disabled', true);
-                } else {
-                  alert(data.msg || 'Ya has destacado esta noticia.');
+              $.post(
+                "api/destacar.php",
+                { noticia_id: noticiaId, usuario_id: usuarioId },
+                function (resp) {
+                  var data = {};
+                  try {
+                    data = JSON.parse(resp);
+                  } catch (e) {}
+                  if (data.success) {
+                    var $count = $(
+                      ".destacados-count[data-id='" + noticiaId + "']"
+                    );
+                    $count.text(parseInt($count.text()) + 1);
+                    $btn.prop("disabled", true);
+                  } else {
+                    alert(data.msg || "Ya has destacado esta noticia.");
+                  }
                 }
-              });
+              );
             });
           });
         } else if (route === "#publicidad") {
@@ -563,7 +653,7 @@
           var usuario = null;
           try {
             usuario = JSON.parse(localStorage.getItem("usuario"));
-          } catch(e) {}
+          } catch (e) {}
           var noticiaId = route.replace("#noticia-", "");
           view.innerHTML =
             '<div class="text-center"><div class="spinner-border"></div><p>Cargando noticia...</p></div>';
@@ -594,7 +684,11 @@
                 <span><i class=\"fas fa-star text-warning\"></i> <span id=\"destacados-count\">${
                   data.destacados
                 }</span> Destacados</span>
-                ${usuario ? '<button class="btn btn-warning btn-sm ms-2" id="destacar-btn"><i class="fas fa-star"></i> Destacar</button>' : '<button class="btn btn-warning btn-sm ms-2" id="destacar-btn" disabled title="Inicia sesión para destacar"><i class="fas fa-star"></i> Destacar</button>'}
+                ${
+                  usuario
+                    ? '<button class="btn btn-warning btn-sm ms-2" id="destacar-btn"><i class="fas fa-star"></i> Destacar</button>'
+                    : '<button class="btn btn-warning btn-sm ms-2" id="destacar-btn" disabled title="Inicia sesión para destacar"><i class="fas fa-star"></i> Destacar</button>'
+                }
                 <button class=\"btn btn-info btn-sm ms-2\" id=\"compartir-btn\"><i class=\"fas fa-share\"></i> Compartir</button>
               </div>
               <button class=\"btn btn-secondary mt-4\" onclick=\"window.location.hash='#national'\">Volver a Nacional</button>
@@ -602,7 +696,7 @@
           </div>`;
             html += `<div class=\"card mb-4\"><div class=\"card-header bg-light\"><h5 class=\"mb-0\"><i class=\"fas fa-comments\"></i> Comentarios</h5></div><div class=\"card-body\">`;
             html += `<form id=\"formComentario\" class=\"d-flex mb-3\"><input type=\"text\" class=\"form-control me-2\" name=\"comentario\" placeholder=\"Escribe un comentario...\" maxlength=\"255\" required><button type=\"submit\" class=\"btn btn-success\">Comentar</button></form>`;
-            if(usuario) {
+            if (usuario) {
               html += `<form id=\"formComentario\" class=\"d-flex mb-3\"><input type=\"text\" class=\"form-control me-2\" name=\"comentario\" placeholder=\"Escribe un comentario...\" maxlength=\"255\" required><button type=\"submit\" class=\"btn btn-success\">Comentar</button></form>`;
             } else {
               html += `<div class=\"alert alert-warning\">Inicia sesión para comentar.</div>`;
@@ -623,18 +717,24 @@
             }
             html += "</div></div>";
             view.innerHTML = html;
-              // Compartir funcionalidad
-              $("#compartir-btn").on("click", function() {
-                var url = window.location.origin + window.location.pathname + "#noticia-" + noticiaId;
-                navigator.clipboard.writeText(url).then(function() {
-                  $("#compartir-btn").text("¡Enlace copiado!");
-                  setTimeout(function() {
-                    $("#compartir-btn").html('<i class="fas fa-share"></i> Compartir');
-                  }, 1500);
-                });
+            // Compartir funcionalidad
+            $("#compartir-btn").on("click", function () {
+              var url =
+                window.location.origin +
+                window.location.pathname +
+                "#noticia-" +
+                noticiaId;
+              navigator.clipboard.writeText(url).then(function () {
+                $("#compartir-btn").text("¡Enlace copiado!");
+                setTimeout(function () {
+                  $("#compartir-btn").html(
+                    '<i class="fas fa-share"></i> Compartir'
+                  );
+                }, 1500);
               });
+            });
             // Interactividad destacar
-            if(usuario) {
+            if (usuario) {
               $("#destacar-btn").click(function () {
                 var usuarioId = usuario.id;
                 $.post(
@@ -657,7 +757,7 @@
               });
             }
             // Interactividad comentar
-            if(usuario) {
+            if (usuario) {
               $("#formComentario").submit(function (e) {
                 e.preventDefault();
                 var usuarioId = usuario.id;
@@ -697,11 +797,12 @@
       }
       window.addEventListener("hashchange", spaRouter);
       window.addEventListener("DOMContentLoaded", spaRouter);
-      window.addEventListener("DOMContentLoaded", function() {
+      window.addEventListener("DOMContentLoaded", function () {
         spaRouter();
         renderCarrusel();
       });
     </script>
+    <script src="js/script.js"></script>
+    <div id="toast-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1060;"></div>
   </body>
-</html>
 </html>

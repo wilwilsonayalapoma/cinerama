@@ -2,7 +2,6 @@
 <?php
 require_once __DIR__ . '/../config/db.php';
 header('Content-Type: application/json');
-$conn = getDbConnection();
 
 $categoria_nacional = $conn->query("SELECT id, color FROM categorias WHERE nombre = 'Nacional' LIMIT 1")->fetch_assoc();
 $nacional_id = $categoria_nacional ? $categoria_nacional['id'] : 0;

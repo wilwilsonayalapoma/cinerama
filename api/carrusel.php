@@ -2,9 +2,6 @@
 header('Content-Type: application/json');
 require_once '../config/db.php'; // Ajusta la ruta si es necesario
 
-// Conexión
-$conn = getDbConnection();
-
 // Consulta: solo imágenes del espacio 'carrusel'
 $sql = "SELECT nombre, imagen, link FROM publicidad WHERE espacio = 'carrusel' ORDER BY id DESC";
 $result = $conn->query($sql);

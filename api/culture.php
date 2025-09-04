@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/db.php';
 header('Content-Type: application/json');
-$conn = getDbConnection();
 
 $categoria = $conn->query("SELECT id, color FROM categorias WHERE nombre = 'Cultura' LIMIT 1")->fetch_assoc();
 $categoria_id = $categoria ? $categoria['id'] : 0;
