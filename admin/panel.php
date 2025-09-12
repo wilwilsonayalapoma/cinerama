@@ -14,6 +14,10 @@ $stats = [];
 // $stats['noticias'] = obtenerCantidadNoticias();
 // etc.
 ?>
+<script>
+  // Variable global de rol para JS
+  var ROL_ACTUAL = <?php echo isset($_SESSION['admin_rol']) ? json_encode($_SESSION['admin_rol']) : 'null'; ?>;
+</script>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -95,6 +99,7 @@ $stats = [];
               <li class="nav-item mb-1"><a class="nav-link" href="#suscriptores"><i class="fas fa-envelope-open-text me-2"></i>Suscriptores</a></li>
               <li class="nav-item mb-1"><a class="nav-link" href="#publicidad"><i class="fas fa-bullhorn me-2"></i>Publicidad</a></li>
               <li class="nav-item mb-1"><a class="nav-link" href="#noticias"><i class="fas fa-newspaper me-2"></i>Noticias</a></li>
+              <li class="nav-item mb-1"><a class="nav-link" href="#deportes"><i class="fas fa-futbol me-2"></i>Deportes</a></li>
               <li class="nav-item mb-1"><a class="nav-link" href="#comentarios"><i class="fas fa-comments me-2"></i>Comentarios</a></li>
               <li class="nav-item mb-1"><a class="nav-link" href="#categorias"><i class="fas fa-tags me-2"></i>Categorías</a></li>
               <li class="nav-item mb-1"><a class="nav-link" href="#estadisticas"><i class="fas fa-chart-bar me-2"></i>Estadísticas</a></li>
@@ -197,6 +202,475 @@ $stats = [];
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   <script>
   $(document).ready(function() {
+    // Funcionalidad para Equipos Deportivos (igual a Categorías)
+    function renderDeportes() {
+  let puedeResetear = (ROL_ACTUAL === 'Administrador' || ROL_ACTUAL === 'Editor');
+  $("#adminContent").html(`
+        <h2 class="mb-3"><i class="fas fa-futbol"></i> Equipos Deportivos</h2>
+        <button class="btn btn-success mb-3" id="btnNuevoEquipo"><i class="fas fa-plus"></i> Nuevo equipo</button>
+        ${puedeResetear ? `<button class="btn btn-danger mb-3 ms-2" id="btnResetPuntos"><i class="fas fa-undo"></i> Resetear puntos</button>` : ''}
+        <div class="table-responsive">
+          <table class='table table-dark table-hover table-bordered' style='background:rgba(41,62,90,0.85);color:#fff;'>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Puntos</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id='equiposTbody'>
+              <tr><td colspan='4' class='text-center'>Cargando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      `);
+      cargarEquipos();
+      if($('#equipoModal').length === 0) {
+        $("body").append(`
+          <div class='modal fade' id='equipoModal' tabindex='-1' aria-labelledby='equipoModalLabel' aria-hidden='true'>
+            <div class='modal-dialog'>
+              <div class='modal-content' style='background:rgba(41,62,90,0.95);color:#fff;'>
+                <div class='modal-header'>
+                  <h5 class='modal-title' id='equipoModalLabel'>Equipo</h5>
+                  <button type='button' class='btn-close btn-close-white' data-bs-dismiss='modal' aria-label='Cerrar'></button>
+                </div>
+                <form id='formEquipo'>
+                  <div class='modal-body'>
+                    <input type='hidden' id='equipoId' name='id'>
+                    <div class='mb-3'>
+                      <label for='equipoNombre' class='form-label'>Nombre</label>
+                      <input type='text' class='form-control' id='equipoNombre' name='nombre' required>
+                    </div>
+                    <div class='mb-3'>
+                      <label for='equipoPuntos' class='form-label'>Puntos</label>
+                      <input type='number' class='form-control' id='equipoPuntos' name='puntos' min='0' value='0' required>
+                    </div>
+                  </div>
+                  <div class='modal-footer'>
+                    <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Cancelar</button>
+                    <button type='submit' class='btn btn-primary'>Guardar</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        `);
+      }
+      configurarEventosEquipos();
+    }
+
+    function cargarEquipos() {
+      $.getJSON('equipos.php?accion=listar', function(data) {
+        var html = '';
+        if(data.length === 0) {
+          html = "<tr><td colspan='4' class='text-center'>No hay equipos registrados.</td></tr>";
+        } else {
+          data.forEach(function(e) {
+            html += `<tr>
+              <td>${e.id}</td>
+              <td>${e.nombre}</td>
+              <td><span class='badge' style='background:#2980b9;'>${e.puntos}</span></td>
+              <td>
+                <button class='btn btn-outline-secondary btn-sm sumar-puntos' data-id='${e.id}' data-puntos='0'>+0</button>
+                <button class='btn btn-outline-success btn-sm sumar-puntos' data-id='${e.id}' data-puntos='1'>+1</button>
+                <button class='btn btn-outline-warning btn-sm sumar-puntos' data-id='${e.id}' data-puntos='3'>+3</button>
+                <button class='btn btn-sm btn-warning editar-equipo' data-id='${e.id}'><i class='fas fa-edit'></i></button>
+                <button class='btn btn-sm btn-danger eliminar-equipo' data-id='${e.id}'><i class='fas fa-trash'></i></button>
+              </td>
+            </tr>`;
+          });
+        }
+        $("#equiposTbody").html(html);
+      }).fail(function() {
+        mostrarToast('Error al cargar equipos', 'danger');
+        $("#equiposTbody").html("<tr><td colspan='4' class='text-center'>Error al cargar equipos</td></tr>");
+      });
+    }
+
+    function configurarEventosEquipos() {
+      // Resetear puntos de todos los equipos
+      $(document).off('click', '#btnResetPuntos').on('click', '#btnResetPuntos', function() {
+        if(confirm('¿Seguro que deseas resetear los puntos de todos los equipos? Esta acción no se puede deshacer.')) {
+          $.post('equipos.php', {accion:'reset_puntos'}, function(resp) {
+            try {
+              var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+              if(data.success) {
+                mostrarToast('Puntos reseteados correctamente', 'success');
+                cargarEquipos();
+              } else {
+                mostrarToast('Error al resetear puntos', 'danger');
+              }
+            } catch(e) {
+              mostrarToast('Error inesperado al procesar la respuesta', 'danger');
+            }
+          }).fail(function() {
+            mostrarToast('Error de conexión', 'danger');
+          });
+        }
+      });
+      // Sumar puntos rápido
+      $(document).off('click', '.sumar-puntos').on('click', '.sumar-puntos', function() {
+        var id = $(this).data('id');
+        var sumar = parseInt($(this).data('puntos'));
+        var puntosActual = parseInt($(this).closest('tr').find('td:eq(2) .badge').text());
+        var nuevosPuntos = puntosActual + sumar;
+        $.post('equipos.php', {accion:'actualizar', id: id, puntos: nuevosPuntos}, function(resp) {
+          try {
+            var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+            if(data.success) {
+              cargarEquipos();
+            } else {
+              mostrarToast('Error al actualizar puntos', 'danger');
+            }
+          } catch(e) {
+            mostrarToast('Error inesperado al procesar la respuesta', 'danger');
+          }
+        }).fail(function() {
+          mostrarToast('Error de conexión', 'danger');
+        });
+      });
+      // Nuevo equipo
+      $(document).off('click', '#btnNuevoEquipo').on('click', '#btnNuevoEquipo', function() {
+        $('#formEquipo')[0].reset();
+        $('#equipoId').val('');
+        $('#equipoModalLabel').text('Nuevo equipo');
+        var modal = new bootstrap.Modal(document.getElementById('equipoModal'));
+        modal.show();
+      });
+      // Editar equipo
+      $(document).off('click', '.editar-equipo').on('click', '.editar-equipo', function() {
+        var id = $(this).data('id');
+        $.getJSON('equipos.php?accion=listar', function(equipos) {
+          var equipo = equipos.find(function(e) { return e.id == id; });
+          if(equipo) {
+            $('#formEquipo')[0].reset();
+            $('#equipoId').val(equipo.id);
+            $('#equipoNombre').val(equipo.nombre);
+            $('#equipoPuntos').val(equipo.puntos);
+            $('#equipoModalLabel').text('Editar equipo');
+            var modal = new bootstrap.Modal(document.getElementById('equipoModal'));
+            modal.show();
+          }
+        });
+      });
+      // Guardar equipo (crear/editar)
+      $(document).off('submit', '#formEquipo').on('submit', '#formEquipo', function(e) {
+        e.preventDefault();
+        var id = $('#equipoId').val();
+        var accion = id ? 'actualizar' : 'crear';
+        var formData = $(this).serialize() + '&accion=' + accion;
+        $.post('equipos.php', formData, function(resp) {
+          try {
+            var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+            if(data.success) {
+              mostrarToast(accion === 'crear' ? 'Equipo creado correctamente' : 'Equipo actualizado', 'success');
+              var modalEl = document.getElementById('equipoModal');
+              var modal = bootstrap.Modal.getInstance(modalEl);
+              if (modal) {
+                $(modalEl).one('hidden.bs.modal', function() {
+                  cargarEquipos();
+                });
+                modal.hide();
+              } else {
+                cargarEquipos();
+              }
+            } else {
+              mostrarToast('Error al guardar equipo', 'danger');
+            }
+          } catch(e) {
+            mostrarToast('Error inesperado al procesar la respuesta', 'danger');
+          }
+        }).fail(function() {
+          mostrarToast('Error de conexión', 'danger');
+        });
+      });
+      // Eliminar equipo
+      $(document).off('click', '.eliminar-equipo').on('click', '.eliminar-equipo', function() {
+        if(confirm('¿Seguro que deseas eliminar este equipo?')) {
+          var id = $(this).data('id');
+          $.post('equipos.php', {accion:'eliminar', id}, function(resp) {
+            try {
+              var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+              if(data.success) {
+                mostrarToast('Equipo eliminado correctamente', 'success');
+                cargarEquipos();
+              } else {
+                mostrarToast('Error al eliminar equipo', 'danger');
+              }
+            } catch(e) {
+              mostrarToast('Error inesperado al procesar la respuesta', 'danger');
+            }
+          }).fail(function() {
+            mostrarToast('Error de conexión', 'danger');
+          });
+        }
+      });
+    }
+    // Funcionalidad para Estadísticas visuales
+    function renderEstadisticas() {
+      $("#adminContent").html(`
+        <h2 class='mb-3'><i class='fas fa-chart-bar'></i> Estadísticas</h2>
+        <div class='row mb-4'>
+          <div class='col-md-6 mb-4'>
+            <canvas id='statsBarChart'></canvas>
+          </div>
+          <div class='col-md-6 mb-4'>
+            <canvas id='statsPieChart'></canvas>
+          </div>
+        </div>
+        <div id='statsResumen' class='row'></div>
+      `);
+      $.getJSON('estadisticas.php', function(data) {
+        // Resumen visual
+        var resumenHtml = `
+          <div class='col-md-2 col-6 mb-3'><div class='card text-center bg-dark text-white'><div class='card-body'><h5>Usuarios</h5><h2>${data.usuarios}</h2></div></div></div>
+          <div class='col-md-2 col-6 mb-3'><div class='card text-center bg-dark text-white'><div class='card-body'><h5>Noticias</h5><h2>${data.noticias}</h2></div></div></div>
+          <div class='col-md-2 col-6 mb-3'><div class='card text-center bg-dark text-white'><div class='card-body'><h5>Comentarios</h5><h2>${data.comentarios}</h2></div></div></div>
+          <div class='col-md-2 col-6 mb-3'><div class='card text-center bg-dark text-white'><div class='card-body'><h5>Categorías</h5><h2>${data.categorias}</h2></div></div></div>
+          <div class='col-md-2 col-6 mb-3'><div class='card text-center bg-dark text-white'><div class='card-body'><h5>Publicidad</h5><h2>${data.publicidad}</h2></div></div></div>
+        `;
+        $('#statsResumen').html(resumenHtml);
+        // Gráficos
+        if(window.statsBarChart) window.statsBarChart.destroy();
+        if(window.statsPieChart) window.statsPieChart.destroy();
+        var ctxBar = document.getElementById('statsBarChart').getContext('2d');
+        var ctxPie = document.getElementById('statsPieChart').getContext('2d');
+        window.statsBarChart = new Chart(ctxBar, {
+          type: 'bar',
+          data: {
+            labels: ['Usuarios', 'Noticias', 'Comentarios', 'Categorías', 'Publicidad'],
+            datasets: [{
+              label: 'Cantidad',
+              data: [data.usuarios, data.noticias, data.comentarios, data.categorias, data.publicidad],
+              backgroundColor: [
+                '#e67e22', '#2980b9', '#27ae60', '#8e44ad', '#c0392b'
+              ]
+            }]
+          },
+          options: {responsive:true, plugins:{legend:{display:false}}}
+        });
+        window.statsPieChart = new Chart(ctxPie, {
+          type: 'pie',
+          data: {
+            labels: ['Usuarios', 'Noticias', 'Comentarios', 'Categorías', 'Publicidad'],
+            datasets: [{
+              data: [data.usuarios, data.noticias, data.comentarios, data.categorias, data.publicidad],
+              backgroundColor: [
+                '#e67e22', '#2980b9', '#27ae60', '#8e44ad', '#c0392b'
+              ]
+            }]
+          },
+          options: {responsive:true}
+        });
+      });
+    }
+    // Funcionalidad para Comentarios (igual a Noticias)
+    function renderComentarios() {
+      $("#adminContent").html(`
+        <h2 class="mb-3"><i class="fas fa-comments"></i> Comentarios</h2>
+        <div class='d-flex mb-3'>
+          <button class="btn btn-success me-2" id="btnNuevoComentario"><i class="fas fa-plus"></i> Nuevo comentario</button>
+          <input type='text' class='form-control w-auto' id='buscadorComentario' placeholder='Buscar por texto o usuario...'>
+        </div>
+        <div class="table-responsive">
+          <table class='table table-dark table-hover table-bordered' style='background:rgba(41,62,90,0.85);color:#fff;'>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Noticia</th>
+                <th>Usuario</th>
+                <th>Comentario</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id='comentariosTbody'>
+              <tr><td colspan='6' class='text-center'>Cargando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      `);
+      cargarComentarios();
+      if($('#comentarioModal').length === 0) {
+        $("body").append(`
+          <div class='modal fade' id='comentarioModal' tabindex='-1' aria-labelledby='comentarioModalLabel' aria-hidden='true'>
+            <div class='modal-dialog'>
+              <div class='modal-content' style='background:rgba(41,62,90,0.95);color:#fff;'>
+                <div class='modal-header'>
+                  <h5 class='modal-title' id='comentarioModalLabel'>Comentario</h5>
+                  <button type='button' class='btn-close btn-close-white' data-bs-dismiss='modal' aria-label='Cerrar'></button>
+                </div>
+                <form id='formComentario'>
+                  <div class='modal-body'>
+                    <input type='hidden' id='comentarioId' name='id'>
+                    <div class='mb-3'>
+                      <label for='comentarioNoticia' class='form-label'>Noticia</label>
+                      <select class='form-select' id='comentarioNoticia' name='noticia_id' required></select>
+                    </div>
+                    <div class='mb-3'>
+                      <label for='comentarioUsuario' class='form-label'>Usuario</label>
+                      <select class='form-select' id='comentarioUsuario' name='usuario_id' required></select>
+                    </div>
+                    <div class='mb-3'>
+                      <label for='comentarioTexto' class='form-label'>Comentario</label>
+                      <textarea class='form-control' id='comentarioTexto' name='comentario' rows='3' required></textarea>
+                    </div>
+                  </div>
+                  <div class='modal-footer'>
+                    <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Cancelar</button>
+                    <button type='submit' class='btn btn-primary'>Guardar</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        `);
+      }
+      cargarNoticiasEnComentario();
+      cargarUsuariosEnComentario();
+      configurarEventosComentarios();
+    }
+
+    function cargarComentarios() {
+      $.getJSON('comentarios.php?accion=listar', function(data) {
+        window._comentariosData = data;
+        renderComentariosTable(data);
+      }).fail(function() {
+        mostrarToast('Error al cargar comentarios', 'danger');
+        $("#comentariosTbody").html("<tr><td colspan='6' class='text-center'>Error al cargar comentarios</td></tr>");
+      });
+      // Buscador dinámico
+      $(document).off('input', '#buscadorComentario').on('input', '#buscadorComentario', function() {
+        var filtro = $(this).val().toLowerCase();
+        var comentarios = window._comentariosData || [];
+        var filtrados = comentarios.filter(function(c) {
+          return c.comentario.toLowerCase().includes(filtro) || (c.usuario && c.usuario.toLowerCase().includes(filtro));
+        });
+        renderComentariosTable(filtrados);
+      });
+    }
+
+    function renderComentariosTable(data) {
+      var html = '';
+      if(data.length === 0) {
+        html = "<tr><td colspan='6' class='text-center'>No hay comentarios registrados.</td></tr>";
+      } else {
+        data.forEach(function(c) {
+          html += `<tr>
+            <td>${c.id}</td>
+            <td>${c.noticia || ''}</td>
+            <td>${c.usuario || ''}</td>
+            <td>${c.comentario}</td>
+            <td>${c.fecha || ''}</td>
+            <td>
+              <button class='btn btn-sm btn-warning editar-comentario' data-id='${c.id}'><i class='fas fa-edit'></i></button>
+              <button class='btn btn-sm btn-danger eliminar-comentario' data-id='${c.id}'><i class='fas fa-trash'></i></button>
+            </td>
+          </tr>`;
+        });
+      }
+      $("#comentariosTbody").html(html);
+    }
+
+    function cargarNoticiasEnComentario() {
+      $.getJSON('noticias.php?accion=listar', function(noticias) {
+        var options = '<option value="">Seleccionar noticia</option>';
+        noticias.forEach(function(n) {
+          options += `<option value='${n.id}'>${n.titulo}</option>`;
+        });
+        $('#comentarioNoticia').html(options);
+      });
+    }
+
+    function cargarUsuariosEnComentario() {
+      $.getJSON('usuarios.php', function(usuarios) {
+        var options = '<option value="">Seleccionar usuario</option>';
+        usuarios.forEach(function(u) {
+          options += `<option value='${u.id}'>${u.nombre}</option>`;
+        });
+        $('#comentarioUsuario').html(options);
+      });
+    }
+
+    function configurarEventosComentarios() {
+      // Nuevo comentario
+      $(document).off('click', '#btnNuevoComentario').on('click', '#btnNuevoComentario', function() {
+        $('#formComentario')[0].reset();
+        $('#comentarioId').val('');
+        $('#comentarioModalLabel').text('Nuevo comentario');
+        var modal = new bootstrap.Modal(document.getElementById('comentarioModal'));
+        modal.show();
+      });
+      // Editar comentario
+      $(document).off('click', '.editar-comentario').on('click', '.editar-comentario', function() {
+        var id = $(this).data('id');
+        var comentarios = window._comentariosData || [];
+        var comentario = comentarios.find(function(c) { return c.id == id; });
+        if(comentario) {
+          $('#formComentario')[0].reset();
+          $('#comentarioId').val(comentario.id);
+          $('#comentarioNoticia').val(comentario.noticia_id);
+          $('#comentarioUsuario').val(comentario.usuario_id);
+          $('#comentarioTexto').val(comentario.comentario);
+          $('#comentarioModalLabel').text('Editar comentario');
+          var modal = new bootstrap.Modal(document.getElementById('comentarioModal'));
+          modal.show();
+        }
+      });
+      // Guardar comentario (crear/editar)
+      $(document).off('submit', '#formComentario').on('submit', '#formComentario', function(e) {
+        e.preventDefault();
+        var id = $('#comentarioId').val();
+        var accion = id ? 'editar' : 'crear';
+        var formData = $(this).serialize() + '&accion=' + accion;
+        $.post('comentarios.php', formData, function(resp) {
+          try {
+            var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+            if(data.success) {
+              mostrarToast(accion === 'crear' ? 'Comentario creado correctamente' : 'Comentario actualizado', 'success');
+              var modalEl = document.getElementById('comentarioModal');
+              var modal = bootstrap.Modal.getInstance(modalEl);
+              if (modal) {
+                $(modalEl).one('hidden.bs.modal', function() {
+                  cargarComentarios();
+                });
+                modal.hide();
+              } else {
+                cargarComentarios();
+              }
+            } else {
+              mostrarToast(data.message || 'Error al guardar comentario', 'danger');
+            }
+          } catch(e) {
+            mostrarToast('Error inesperado al procesar la respuesta', 'danger');
+          }
+        }).fail(function() {
+          mostrarToast('Error de conexión', 'danger');
+        });
+      });
+      // Eliminar comentario
+      $(document).off('click', '.eliminar-comentario').on('click', '.eliminar-comentario', function() {
+        if(confirm('¿Seguro que deseas eliminar este comentario?')) {
+          var id = $(this).data('id');
+          $.post('comentarios.php', {accion:'eliminar', id}, function(resp) {
+            try {
+              var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+              if(data.success) {
+                mostrarToast('Comentario eliminado correctamente', 'success');
+                cargarComentarios();
+              } else {
+                mostrarToast(data.message || 'Error al eliminar comentario', 'danger');
+              }
+            } catch(e) {
+              mostrarToast('Error inesperado al procesar la respuesta', 'danger');
+            }
+          }).fail(function() {
+            mostrarToast('Error de conexión', 'danger');
+          });
+        }
+      });
+    }
     // Función para mostrar toasts
     function mostrarToast(mensaje, tipo = "success") {
       const toastId = "toast-" + Date.now();
@@ -508,7 +982,10 @@ $stats = [];
     function renderUsuarios() {
       $("#adminContent").html(`
         <h2 class="mb-3"><i class="fas fa-user-friends"></i> Usuarios</h2>
-        <button class="btn btn-success mb-3" id="btnNuevoUsuario"><i class="fas fa-plus"></i> Nuevo usuario</button>
+        <div class='d-flex mb-3'>
+          <button class="btn btn-success me-2" id="btnNuevoUsuario"><i class="fas fa-plus"></i> Nuevo usuario</button>
+          <input type='text' class='form-control w-auto' id='buscadorCorreoUsuario' placeholder='Buscar por correo...'>
+        </div>
         <div class="table-responsive">
           <table class='table table-dark table-hover table-bordered' style='background:rgba(41,62,90,0.85);color:#fff;'>
             <thead>
@@ -573,30 +1050,47 @@ $stats = [];
 
     function cargarUsuarios() {
       $.getJSON('usuarios.php', function(data) {
+        window._usuariosData = data;
         $.getJSON('roles.php', function(roles) {
-          var html = '';
-          if(data.length === 0) {
-            html = "<tr><td colspan='5' class='text-center'>No hay usuarios registrados.</td></tr>";
-          } else {
-            data.forEach(function(u) {
-              html += `<tr>
-                <td>${u.id}</td>
-                <td>${u.nombre}</td>
-                <td>${u.correo}</td>
-                <td>${roles[u.rol_id] || ''}</td>
-                <td>
-                  <button class='btn btn-sm btn-warning editar-usuario' data-id='${u.id}'><i class='fas fa-edit'></i></button>
-                  <button class='btn btn-sm btn-danger eliminar-usuario' data-id='${u.id}'><i class='fas fa-trash'></i></button>
-                </td>
-              </tr>`;
-            });
-          }
-          $("#usuariosTbody").html(html);
+          renderUsuariosTable(data, roles);
         });
       }).fail(function() {
         mostrarToast('Error al cargar usuarios', 'danger');
         $("#usuariosTbody").html("<tr><td colspan='5' class='text-center'>Error al cargar usuarios</td></tr>");
       });
+
+      // Buscador dinámico
+      $(document).off('input', '#buscadorCorreoUsuario').on('input', '#buscadorCorreoUsuario', function() {
+        var filtro = $(this).val().toLowerCase();
+        var usuarios = window._usuariosData || [];
+        $.getJSON('roles.php', function(roles) {
+          var filtrados = usuarios.filter(function(u) {
+            return u.correo.toLowerCase().includes(filtro);
+          });
+          renderUsuariosTable(filtrados, roles);
+        });
+      });
+    }
+
+    function renderUsuariosTable(data, roles) {
+      var html = '';
+      if(data.length === 0) {
+        html = "<tr><td colspan='5' class='text-center'>No hay usuarios registrados.</td></tr>";
+      } else {
+        data.forEach(function(u) {
+          html += `<tr>
+            <td>${u.id}</td>
+            <td>${u.nombre}</td>
+            <td>${u.correo}</td>
+            <td>${roles[u.rol_id] || ''}</td>
+            <td>
+              <button class='btn btn-sm btn-warning editar-usuario' data-id='${u.id}'><i class='fas fa-edit'></i></button>
+              <button class='btn btn-sm btn-danger eliminar-usuario' data-id='${u.id}'><i class='fas fa-trash'></i></button>
+            </td>
+          </tr>`;
+        });
+      }
+      $("#usuariosTbody").html(html);
     }
 
     function cargarRolesUsuario() {
@@ -854,25 +1348,36 @@ $stats = [];
       e.preventDefault();
       $("#adminMenu a").removeClass('active');
       $(this).addClass('active');
-      
       var target = $(this).attr('href');
-      if (target === '#noticias') {
+      if (target === '#deportes') {
+        renderDeportes();
+      } else if (target === '#noticias') {
         renderNoticias();
       } else if (target === '#usuarios') {
         renderUsuarios();
       } else if (target === '#categorias') {
         renderCategorias();
+      } else if (target === '#comentarios') {
+        renderComentarios();
+      } else if (target === '#estadisticas') {
+        renderEstadisticas();
       } else if (target === '#dashboard') {
         $("#adminContent").html(`
-          <h2 class="mb-3">Bienvenido, <?php echo htmlspecialchars($_SESSION['admin_correo']); ?>!</h2>
+          <h2 class=\"mb-3\">Bienvenido, <?php echo htmlspecialchars($_SESSION['admin_correo']); ?>!</h2>
           <p>Selecciona una opción del menú para gestionar el sistema.</p>
         `);
       } else {
         $("#adminContent").html(`
-          <h2 class="mb-3">${$(this).text()}</h2>
+          <h2 class=\"mb-3\">${$(this).text()}</h2>
           <p>Función en desarrollo.</p>
         `);
       }
+  // Cargar Chart.js para los gráficos de estadísticas
+  if (typeof Chart === 'undefined') {
+    var script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+    document.head.appendChild(script);
+  }
     });
   });
   </script>
