@@ -324,20 +324,21 @@
     <script>
       // Renderiza el carrusel dinámico desde la base de datos
       function renderCarrusel() {
-        $.getJSON("api/carrusel.php", function (data) {
+        $.getJSON("api/publicidad.php", function (data) {
           if (!data || !data.length) {
             $("#spa-carrusel").html("");
             return;
           }
           var html =
-            '<div id="cineramaCarrusel" class="carousel slide" data-bs-ride="carousel">';
+            '<div id="cineramaCarrusel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">';
           html += '<div class="carousel-inner">';
           data.forEach(function (item, idx) {
             html += `<div class="carousel-item${idx === 0 ? " active" : ""}">`;
-            html += `<img src="${item.imagen}" class="d-block w-100" alt="${item.titulo}" style="max-height:320px;object-fit:cover;">`;
-            html += `<div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-3 p-2">`;
-            html += `<h5>${item.titulo}</h5><p>${item.descripcion}</p>`;
-            html += "</div></div>";
+            html += `<img src="${item.imagen}" class="d-block w-100" alt="Publicidad" style="max-height:180px;object-fit:cover;border-radius:10px;box-shadow:0 2px 8px 0 rgba(41,62,90,0.10),0 0 0 2px rgba(41,62,90,0.10);">`;
+            if(item.link) {
+              html += `<a href="${item.link}" target="_blank" class="stretched-link"></a>`;
+            }
+            html += `</div>`;
           });
           html += "</div>";
           html +=
@@ -352,6 +353,11 @@
           html += '<span class="visually-hidden">Siguiente</span></button>';
           html += "</div>";
           $("#spa-carrusel").html(html);
+          // Forzar el intervalo si Bootstrap 5 no lo toma del atributo
+          var carrusel = document.getElementById('cineramaCarrusel');
+          if (carrusel && typeof bootstrap !== 'undefined') {
+            var carouselInstance = bootstrap.Carousel.getOrCreateInstance(carrusel, {interval:4000, ride:'carousel'});
+          }
         });
       }
 
@@ -451,8 +457,9 @@
             html += `</div></div>`;
             // Clasificación Deportiva
             html += `<div class="bg-light-custom p-3 rounded mb-4"><h4>Clasificación Deportiva</h4><ul class="list-group">`;
-            (data.clasificacion || []).forEach(function (eq) {
-              html += `<li class="list-group-item d-flex justify-content-between align-items-center">${eq.equipo}<span class="badge bg-primary rounded-pill">${eq.puntos} pts</span></li>`;
+            (data.clasificacion || []).forEach(function (eq, i) {
+              var bg = i % 2 === 0 ? 'bg-white' : 'bg-light';
+              html += `<li class="list-group-item d-flex justify-content-between align-items-center ${bg}">${eq.equipo}<span class="badge bg-primary rounded-pill">${eq.puntos} pts</span></li>`;
             });
             html += `</ul></div>`;
             // Boletín

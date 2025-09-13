@@ -1,3 +1,10 @@
+/* Alternancia de color para la clasificación deportiva */
+.list-group-item.bg-white {
+  background-color: #fff !important;
+}
+.list-group-item.bg-light {
+  background-color: #f8f9fa !important;
+}
 :root {
   /* Paleta principal - Azul oscuro (#293E5A) */
   --primary-color: #293e5a;
@@ -53,6 +60,11 @@ body {
   line-height: 1.6;
   color: var(--text-primary);
   background-color: var(--bg-white);
+  background-image: url('assets/img/fondo1-1.webp');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center center;
 }
 
 /* Header y Navegación */

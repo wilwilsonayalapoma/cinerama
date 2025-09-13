@@ -1,7 +1,7 @@
 <?php
 include_once __DIR__ . '/../config/db.php';
 header('Content-Type: application/json');
-$res = $conn->query("SELECT * FROM publicidad ORDER BY fecha DESC");
+$res = $conn->query("SELECT * FROM publicidad WHERE espacio='carrusel' ORDER BY id DESC");
 $imagenes = [];
 while ($row = $res->fetch_assoc()) {
     $imagenes[] = [

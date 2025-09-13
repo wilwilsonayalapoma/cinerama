@@ -1357,6 +1357,8 @@ $stats = [];
         renderUsuarios();
       } else if (target === '#categorias') {
         renderCategorias();
+      } else if (target === '#publicidad') {
+        renderPublicidad();
       } else if (target === '#comentarios') {
         renderComentarios();
       } else if (target === '#estadisticas') {
@@ -1372,6 +1374,207 @@ $stats = [];
           <p>Función en desarrollo.</p>
         `);
       }
+    // CRUD Publicidad
+    function renderPublicidad() {
+      $("#adminContent").html(`
+        <h2 class=\"mb-3\"><i class='fas fa-bullhorn'></i> Publicidad</h2>
+        <button class=\"btn btn-success mb-3\" id=\"btnNuevaPublicidad\"><i class='fas fa-plus'></i> Nueva publicidad</button>
+        <div class=\"table-responsive\">
+          <table class='table table-dark table-hover table-bordered' style='background:rgba(41,62,90,0.85);color:#fff;'>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Imagen</th>
+                <th>Link</th>
+                <th>Espacio</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id='publicidadTbody'>
+              <tr><td colspan='6' class='text-center'>Cargando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      `);
+      cargarPublicidad();
+      if($('#publicidadModal').length === 0) {
+        $("body").append(`
+          <div class='modal fade' id='publicidadModal' tabindex='-1' aria-labelledby='publicidadModalLabel' aria-hidden='true'>
+            <div class='modal-dialog'>
+              <div class='modal-content' style='background:rgba(41,62,90,0.95);color:#fff;'>
+                <div class='modal-header'>
+                  <h5 class='modal-title' id='publicidadModalLabel'>Publicidad</h5>
+                  <button type='button' class='btn-close btn-close-white' data-bs-dismiss='modal' aria-label='Cerrar'></button>
+                </div>
+                <form id='formPublicidad' enctype='multipart/form-data'>
+                  <div class='modal-body'>
+                    <input type='hidden' id='publicidadId' name='id'>
+                    <div class='mb-3'>
+                      <label for='publicidadNombre' class='form-label'>Nombre</label>
+                      <input type='text' class='form-control' id='publicidadNombre' name='nombre' required>
+                    </div>
+                    <div class='mb-3'>
+                      <label for='publicidadImagen' class='form-label'>Imagen</label>
+                      <input type='file' class='form-control' id='publicidadImagen' name='imagen' accept='image/*'>
+                      <img id='publicidadPreview' src='' alt='Vista previa' class='img-fluid mt-2' style='max-height:120px;display:none;'>
+                    </div>
+                    <div class='mb-3'>
+                      <label for='publicidadLink' class='form-label'>Link</label>
+                      <input type='url' class='form-control' id='publicidadLink' name='link'>
+                    </div>
+                    <div class='mb-3'>
+                      <label for='publicidadEspacio' class='form-label'>Espacio</label>
+                      <input type='text' class='form-control' id='publicidadEspacio' name='espacio'>
+                    </div>
+                  </div>
+                  <div class='modal-footer'>
+                    <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Cancelar</button>
+                    <button type='submit' class='btn btn-primary'>Guardar</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        `);
+      }
+      configurarEventosPublicidad();
+    }
+
+    function cargarPublicidad() {
+      $.getJSON('publicidad.php?accion=listar', function(data) {
+        var html = '';
+        if(data.length === 0) {
+          html = "<tr><td colspan='6' class='text-center'>No hay publicidad registrada.</td></tr>";
+        } else {
+          data.forEach(function(p) {
+            html += `<tr>
+              <td>${p.id}</td>
+              <td>${p.nombre}</td>
+              <td>${p.imagen ? `<img src='../assets/img/${p.imagen}' style='max-height:60px;'>` : ''}</td>
+              <td>${p.link ? `<a href='${p.link}' target='_blank'>${p.link}</a>` : ''}</td>
+              <td>${p.espacio || ''}</td>
+              <td>
+                <button class='btn btn-sm btn-warning editar-publicidad' data-id='${p.id}'><i class='fas fa-edit'></i></button>
+                <button class='btn btn-sm btn-danger eliminar-publicidad' data-id='${p.id}'><i class='fas fa-trash'></i></button>
+              </td>
+            </tr>`;
+          });
+        }
+        $("#publicidadTbody").html(html);
+      }).fail(function() {
+        mostrarToast('Error al cargar publicidad', 'danger');
+        $("#publicidadTbody").html("<tr><td colspan='6' class='text-center'>Error al cargar publicidad</td></tr>");
+      });
+    }
+
+    function configurarEventosPublicidad() {
+      // Nueva publicidad
+      $(document).off('click', '#btnNuevaPublicidad').on('click', '#btnNuevaPublicidad', function() {
+        $('#formPublicidad')[0].reset();
+        $('#publicidadId').val('');
+        $('#publicidadPreview').hide().attr('src','');
+        $('#publicidadModalLabel').text('Nueva publicidad');
+        var modal = new bootstrap.Modal(document.getElementById('publicidadModal'));
+        modal.show();
+      });
+      // Editar publicidad
+      $(document).off('click', '.editar-publicidad').on('click', '.editar-publicidad', function() {
+        var id = $(this).data('id');
+        $.getJSON('publicidad.php?accion=listar', function(publicidades) {
+          var pub = publicidades.find(function(p) { return p.id == id; });
+          if(pub) {
+            $('#formPublicidad')[0].reset();
+            $('#publicidadId').val(pub.id);
+            $('#publicidadNombre').val(pub.nombre);
+            $('#publicidadLink').val(pub.link);
+            $('#publicidadEspacio').val(pub.espacio);
+            if(pub.imagen) {
+              $('#publicidadPreview').attr('src','../assets/img/'+pub.imagen).show();
+            } else {
+              $('#publicidadPreview').hide().attr('src','');
+            }
+            $('#publicidadModalLabel').text('Editar publicidad');
+            var modal = new bootstrap.Modal(document.getElementById('publicidadModal'));
+            modal.show();
+          }
+        });
+      });
+      // Vista previa imagen
+      $(document).off('change', '#publicidadImagen').on('change', '#publicidadImagen', function(e) {
+        var input = this;
+        if(input.files && input.files[0]) {
+          var reader = new FileReader();
+          reader.onload = function(ev) {
+            $('#publicidadPreview').attr('src', ev.target.result).show();
+          }
+          reader.readAsDataURL(input.files[0]);
+        } else {
+          $('#publicidadPreview').hide().attr('src','');
+        }
+      });
+      // Guardar publicidad (crear/editar)
+      $(document).off('submit', '#formPublicidad').on('submit', '#formPublicidad', function(e) {
+        e.preventDefault();
+        var id = $('#publicidadId').val();
+        var accion = id ? 'editar' : 'crear';
+        var formData = new FormData(this);
+        formData.append('accion', accion);
+        $.ajax({
+          url: 'publicidad.php',
+          type: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(resp) {
+            try {
+              var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+              if(data.success) {
+                mostrarToast(accion === 'crear' ? 'Publicidad creada correctamente' : 'Publicidad actualizada', 'success');
+                var modalEl = document.getElementById('publicidadModal');
+                var modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) {
+                  $(modalEl).one('hidden.bs.modal', function() {
+                    cargarPublicidad();
+                  });
+                  modal.hide();
+                } else {
+                  cargarPublicidad();
+                }
+              } else {
+                mostrarToast(data.message || 'Error al guardar publicidad', 'danger');
+              }
+            } catch(e) {
+              mostrarToast('Error inesperado al procesar la respuesta', 'danger');
+            }
+          },
+          error: function() {
+            mostrarToast('Error de conexión', 'danger');
+          }
+        });
+      });
+      // Eliminar publicidad
+      $(document).off('click', '.eliminar-publicidad').on('click', '.eliminar-publicidad', function() {
+        if(confirm('¿Seguro que deseas eliminar esta publicidad?')) {
+          var id = $(this).data('id');
+          $.post('publicidad.php', {accion:'eliminar', id}, function(resp) {
+            try {
+              var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+              if(data.success) {
+                mostrarToast('Publicidad eliminada correctamente', 'success');
+                cargarPublicidad();
+              } else {
+                mostrarToast(data.message || 'Error al eliminar publicidad', 'danger');
+              }
+            } catch(e) {
+              mostrarToast('Error inesperado al procesar la respuesta', 'danger');
+            }
+          }).fail(function() {
+            mostrarToast('Error de conexión', 'danger');
+          });
+        }
+      });
+    }
   // Cargar Chart.js para los gráficos de estadísticas
   if (typeof Chart === 'undefined') {
     var script = document.createElement('script');

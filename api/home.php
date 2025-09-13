@@ -72,12 +72,17 @@ while ($row = $res->fetch_assoc()) {
     ];
 }
 
-// Clasificación deportiva (simulado)
-$clasificacion = [
-    ['equipo' => 'Equipo A', 'puntos' => 42],
-    ['equipo' => 'Equipo B', 'puntos' => 38],
-    ['equipo' => 'Equipo C', 'puntos' => 35]
-];
+
+// Clasificación deportiva dinámica: top 3 equipos con más puntos
+$clasificacion = [];
+$sql = "SELECT nombre as equipo, puntos FROM equipos ORDER BY puntos DESC, nombre ASC LIMIT 3";
+$res = $conn->query($sql);
+while ($row = $res->fetch_assoc()) {
+    $clasificacion[] = [
+        'equipo' => $row['equipo'],
+        'puntos' => (int)$row['puntos']
+    ];
+}
 
 $conn->close();
 echo json_encode([
