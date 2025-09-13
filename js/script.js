@@ -117,11 +117,24 @@ if ($("#loginForm").length) {
         console.log("Respuesta login:", resp);
 
         let data = {};
-        try {
-          data = JSON.parse(resp);
-        } catch (e) {
-          console.error("Error parsing login JSON:", e, "Response:", resp);
-          mostrarToast("Error en la respuesta del servidor", "danger");
+        if (typeof resp === "object") {
+          data = resp;
+        } else if (typeof resp === "string") {
+          try {
+            data = JSON.parse(resp);
+          } catch (e) {
+            console.error("Error parsing login JSON:", e, "Response:", resp);
+            mostrarToast("Error en la respuesta del servidor", "danger");
+            submitBtn.html(originalText);
+            submitBtn.prop("disabled", false);
+            return;
+          }
+        } else {
+          console.error("Tipo de respuesta inesperado:", typeof resp, resp);
+          mostrarToast(
+            "Error: Tipo de respuesta inesperado del servidor.",
+            "danger"
+          );
           submitBtn.html(originalText);
           submitBtn.prop("disabled", false);
           return;
