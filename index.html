@@ -28,10 +28,15 @@
         </div>
       </div>
 
-            <nav class="navbar navbar-expand-lg navbar-light bg-custom">
+      <nav class="navbar navbar-expand-lg navbar-light bg-custom">
         <div class="container">
           <a class="navbar-brand" href="#home" id="spa-home">
-            <img src="assets/img/sin-fondo.png" alt="CineramaTV" style="height:60px;object-fit:contain;cursor:pointer;" id="navbar-logo">
+            <img
+              src="assets/img/sin-fondo.png"
+              alt="CineramaTV"
+              style="height: 60px; object-fit: contain; cursor: pointer"
+              id="navbar-logo"
+            />
           </a>
           <button
             class="navbar-toggler"
@@ -44,45 +49,61 @@
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
               <li class="nav-item">
-                <a class="nav-link" href="#home">Inicio</a>
+                <a class="nav-link text-white" href="#home">Inicio</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#national">Nacional</a>
+                <a class="nav-link text-white" href="#national">Nacional</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#international">Internacional</a>
+                <a class="nav-link text-white" href="#international"
+                  >Internacional</a
+                >
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#sports">Deportes</a>
+                <a class="nav-link text-white" href="#sports">Deportes</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#culture">Cultura</a>
+                <a class="nav-link text-white" href="#culture">Cultura</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#video">Video</a>
+                <a class="nav-link text-white" href="#video">Video</a>
               </li>
             </ul>
             <ul class="navbar-nav ms-auto">
+              <li class="nav-item">
                 <form class="d-flex me-3" role="search" id="navbarSearchForm">
-                  <input class="form-control" type="search" placeholder="Buscar..." aria-label="Buscar" id="navbarSearchInput" style="width: 160px;">
-                  <button class="btn btn-outline-light ms-2" type="submit" id="navbarSearchBtn">
+                  <input
+                    class="form-control"
+                    type="search"
+                    placeholder="Buscar..."
+                    aria-label="Buscar"
+                    id="navbarSearchInput"
+                    style="width: 160px"
+                  />
+                  <button
+                    class="btn btn-outline-light ms-2"
+                    type="submit"
+                    id="navbarSearchBtn"
+                  >
                     <i class="fa fa-search"></i>
                   </button>
                 </form>
+              </li>
               <li class="nav-item">
-                <a
-                  class="nav-link"
-                  href="#"
+                <button
+                  class="btn btn-link ms-2 p-0"
+                  type="button"
                   data-bs-toggle="modal"
                   data-bs-target="#loginModal"
-                <a
-                  class="nav-link"
-                  href="#"
-                  data-bs-toggle="modal"
-                  data-bs-target="#loginModal"
+                  title="Iniciar sesión o registrarse"
                 >
-                  <i class="fa fa-user-circle fa-lg" style="color: #fff"></i>
-                </a>
+                  <i class="fa fa-user-circle fa-2x" style="color: #fff"></i>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
     </header>
 
     <!-- SPA MAIN CONTAINER -->
@@ -168,7 +189,7 @@
       </div>
     </div>
 
-    <!-- Modal de registro -->
+    <!-- Modal de registro de usuario -->
     <div
       class="modal fade"
       id="registerModal"
@@ -210,10 +231,9 @@
                   type="text"
                   class="form-control"
                   id="registerName"
-                  placeholder="Nombre completo"
+                  placeholder="Tu nombre completo"
                   required
                 />
-                <div class="invalid-feedback">Ingresa tu nombre completo.</div>
               </div>
               <div class="mb-3">
                 <label for="registerEmail" class="form-label"
@@ -238,12 +258,12 @@
                   id="registerPassword"
                   placeholder="Contraseña"
                   required
+                  minlength="6"
                 />
-                <div class="invalid-feedback">Ingresa una contraseña.</div>
               </div>
               <div class="mb-3">
                 <label for="registerPassword2" class="form-label"
-                  >Verificar contraseña</label
+                  >Repetir contraseña</label
                 >
                 <input
                   type="password"
@@ -251,26 +271,16 @@
                   id="registerPassword2"
                   placeholder="Repite la contraseña"
                   required
+                  minlength="6"
                 />
                 <div class="invalid-feedback">
                   Las contraseñas no coinciden.
                 </div>
               </div>
-              <button type="submit" class="btn btn-success w-100">
+              <button type="submit" class="btn btn-primary w-100">
                 Registrarse
               </button>
             </form>
-            <div class="text-center mt-3">
-              <span>¿Ya tienes cuenta?</span>
-              <a
-                href="#"
-                class="text-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#loginModal"
-                data-bs-dismiss="modal"
-                >Iniciar sesión</a
-              >
-            </div>
           </div>
         </div>
       </div>
@@ -309,18 +319,15 @@
         </div>
         <hr />
         <p class="text-center mb-0">
-          &copy;
-          <?php echo date('Y'); ?>
-          Cinerama. Todos los derechos reservados.
+          &copy; 2023 Cinerama. Todos los derechos reservados.
         </p>
       </div>
     </footer>
 
     <!-- Bootstrap JS -->
-    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
       // Renderiza el carrusel dinámico desde la base de datos
       function renderCarrusel() {
@@ -335,7 +342,7 @@
           data.forEach(function (item, idx) {
             html += `<div class="carousel-item${idx === 0 ? " active" : ""}">`;
             html += `<img src="${item.imagen}" class="d-block w-100" alt="Publicidad" style="max-height:180px;object-fit:cover;border-radius:10px;box-shadow:0 2px 8px 0 rgba(41,62,90,0.10),0 0 0 2px rgba(41,62,90,0.10);">`;
-            if(item.link) {
+            if (item.link) {
               html += `<a href="${item.link}" target="_blank" class="stretched-link"></a>`;
             }
             html += `</div>`;
@@ -354,9 +361,12 @@
           html += "</div>";
           $("#spa-carrusel").html(html);
           // Forzar el intervalo si Bootstrap 5 no lo toma del atributo
-          var carrusel = document.getElementById('cineramaCarrusel');
-          if (carrusel && typeof bootstrap !== 'undefined') {
-            var carouselInstance = bootstrap.Carousel.getOrCreateInstance(carrusel, {interval:4000, ride:'carousel'});
+          var carrusel = document.getElementById("cineramaCarrusel");
+          if (carrusel && typeof bootstrap !== "undefined") {
+            var carouselInstance = bootstrap.Carousel.getOrCreateInstance(
+              carrusel,
+              { interval: 4000, ride: "carousel" }
+            );
           }
         });
       }
@@ -406,7 +416,7 @@
             // Columna lateral
             html += `<div class="col-md-4">`;
             // Destacadas del día
-            html += `<div class="bg-light-custom p-3 rounded mb-4"><h4>Destacadas del día</h4><div class="list-group">`;
+            html += `<div class="bg-light p-3 rounded mb-4"><h4>Destacadas del día</h4><div class="list-group">`;
             if ((data.destacadas_dia || []).length === 0) {
               html += `<div class='text-muted p-3'>No hay noticias destacadas hoy.</div>`;
             } else {
@@ -434,7 +444,7 @@
             }
             html += `</div></div>`;
             // Más comentadas
-            html += `<div class="bg-light-custom p-3 rounded mb-4"><h4>Más comentadas</h4><div class="list-group">`;
+            html += `<div class="bg-light p-3 rounded mb-4"><h4>Más comentadas</h4><div class="list-group">`;
             (data.mas_comentadas || []).slice(0, 3).forEach(function (noticia) {
               html += `<a href="#noticia-${
                 noticia.id
@@ -456,14 +466,14 @@
             });
             html += `</div></div>`;
             // Clasificación Deportiva
-            html += `<div class="bg-light-custom p-3 rounded mb-4"><h4>Clasificación Deportiva</h4><ul class="list-group">`;
+            html += `<div class="bg-light p-3 rounded mb-4"><h4>Clasificación Deportiva</h4><ul class="list-group">`;
             (data.clasificacion || []).forEach(function (eq, i) {
-              var bg = i % 2 === 0 ? 'bg-white' : 'bg-light';
+              var bg = i % 2 === 0 ? "bg-white" : "bg-light";
               html += `<li class="list-group-item d-flex justify-content-between align-items-center ${bg}">${eq.equipo}<span class="badge bg-primary rounded-pill">${eq.puntos} pts</span></li>`;
             });
             html += `</ul></div>`;
             // Boletín
-            html += `<div class="bg-light-custom p-3 rounded"><h4>Boletín informativo</h4><p>Suscríbete para recibir las últimas noticias</p><form id="newsletterForm"><div class="mb-3"><input type="email" class="form-control" placeholder="Tu email" required></div><button type="submit" class="btn btn-primary w-100">Suscribirse</button></form></div>`;
+            html += `<div class="bg-light p-3 rounded"><h4>Boletín informativo</h4><p>Suscríbete para recibir las últimas noticias</p><form id="newsletterForm"><div class="mb-3"><input type="email" class="form-control" placeholder="Tu email" required></div><button type="submit" class="btn btn-primary w-100">Suscribirse</button></form></div>`;
             html += `</div></div></section>`;
             view.innerHTML = html;
             // SPA: Navegación al detalle
@@ -702,7 +712,6 @@
             </div>
           </div>`;
             html += `<div class=\"card mb-4\"><div class=\"card-header bg-light\"><h5 class=\"mb-0\"><i class=\"fas fa-comments\"></i> Comentarios</h5></div><div class=\"card-body\">`;
-            html += `<form id=\"formComentario\" class=\"d-flex mb-3\"><input type=\"text\" class=\"form-control me-2\" name=\"comentario\" placeholder=\"Escribe un comentario...\" maxlength=\"255\" required><button type=\"submit\" class=\"btn btn-success\">Comentar</button></form>`;
             if (usuario) {
               html += `<form id=\"formComentario\" class=\"d-flex mb-3\"><input type=\"text\" class=\"form-control me-2\" name=\"comentario\" placeholder=\"Escribe un comentario...\" maxlength=\"255\" required><button type=\"submit\" class=\"btn btn-success\">Comentar</button></form>`;
             } else {
@@ -803,13 +812,16 @@
         renderView(window.location.hash);
       }
       window.addEventListener("hashchange", spaRouter);
-      window.addEventListener("DOMContentLoaded", spaRouter);
       window.addEventListener("DOMContentLoaded", function () {
         spaRouter();
         renderCarrusel();
       });
     </script>
     <script src="js/script.js"></script>
-    <div id="toast-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1060;"></div>
+    <div
+      id="toast-container"
+      class="position-fixed top-0 end-0 p-3"
+      style="z-index: 1060"
+    ></div>
   </body>
 </html>

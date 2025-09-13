@@ -60,11 +60,6 @@ body {
   line-height: 1.6;
   color: var(--text-primary);
   background-color: var(--bg-white);
-  background-image: url('assets/img/fondo1-1.webp');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-position: center center;
 }
 
 /* Header y Navegación */
